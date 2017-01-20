@@ -193,6 +193,7 @@ namespace AbstractQuery
 		GreaterThen,
 		GreaterEqualThen,
 		Equal,
+		NotEqual,
 		Like,
 		NotLike,
 	}
