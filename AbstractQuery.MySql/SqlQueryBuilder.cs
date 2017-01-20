@@ -144,7 +144,7 @@ namespace AbstractQuery.MySql
 					case Is.LowerThen: op = "<"; break;
 					case Is.LowerEqualThen: op = "<="; break;
 					case Is.GreaterThen: op = ">"; break;
-					case Is.GreaterEqualThen: op = "<="; break;
+					case Is.GreaterEqualThen: op = ">="; break;
 					case Is.Equal: op = "="; break;
 					case Is.Like: op = "LIKE"; break;
 				}
