@@ -47,6 +47,18 @@ namespace AbstractQuery.Tests.MySql
 			query = Query.Select("*").From("test").OrderBy("testId");
 			queryString = new SqlQueryBuilder().GetQueryString(query);
 			Assert.Equal("SELECT * FROM `test` ORDER BY `testId` ASC ;", queryString);
+
+			query = Query.Select("*").From("test1").InnerJoin("test2", "test1.testId", "test2.testId");
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test1` INNER JOIN `test2` ON `test1.testId` = `test2.testId` ;", queryString);
+
+			query = Query.Select("*").From("test1").InnerJoin("test2", "test1.testId", "test2.testId").OrderBy("testId");
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test1` INNER JOIN `test2` ON `test1.testId` = `test2.testId` ORDER BY `testId` ASC ;", queryString);
+
+			query = Query.Select("*").From("test1").InnerJoin("test2", "test1.testId", "test2.testId").InnerJoin("test3", "test1.testId", "test3.testId");
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test1` INNER JOIN `test2` ON `test1.testId` = `test2.testId` INNER JOIN `test3` ON `test1.testId` = `test3.testId` ;", queryString);
 		}
 	}
 }

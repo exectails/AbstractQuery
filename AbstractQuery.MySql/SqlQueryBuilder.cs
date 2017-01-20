@@ -25,6 +25,7 @@ namespace AbstractQuery.MySql
 			var select = query.SelectElement;
 			var from = query.FromElement;
 			var orderBys = query.OrderByElements;
+			var innerJoins = query.InnerJoinElements;
 
 			if (from == null)
 				throw new InvalidOperationException("Expected 'From' element in query.");
@@ -56,6 +57,20 @@ namespace AbstractQuery.MySql
 				sb.AppendFormat("FROM `{0}` ", from.TableName);
 			else
 				sb.AppendFormat("FROM `{0}` AS `{1}` ", from.TableName, from.ShortName);
+
+			// INNER JOIN
+			if (innerJoins != null && innerJoins.Any())
+			{
+				foreach (var innerJoin in innerJoins)
+				{
+					sb.AppendFormat("INNER JOIN `{0}` ", innerJoin.TableName);
+
+					var name1 = '`' + innerJoin.FieldName1 + '`';
+					var name2 = '`' + innerJoin.FieldName2 + '`';
+
+					sb.AppendFormat("ON {0} = {1} ", name1, name2);
+				}
+			}
 
 			// WHERE
 			this.AppendWheres(sb, query);

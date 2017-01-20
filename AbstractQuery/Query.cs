@@ -8,6 +8,7 @@ namespace AbstractQuery
 		public FromElement FromElement { get; set; }
 		public List<WhereElement> WhereElements { get; set; }
 		public List<OrderByElement> OrderByElements { get; set; }
+		public List<InnerJoinElement> InnerJoinElements { get; set; }
 
 		protected Query()
 		{
@@ -80,6 +81,18 @@ namespace AbstractQuery
 
 			return this;
 		}
+
+		public Query InnerJoin(string tableName, string fieldName1, string fieldName2)
+		{
+			var element = new InnerJoinElement(tableName, fieldName1, fieldName2);
+
+			if (this.InnerJoinElements == null)
+				this.InnerJoinElements = new List<InnerJoinElement>();
+
+			this.InnerJoinElements.Add(element);
+
+			return this;
+		}
 	}
 
 	public class SelectElement
@@ -125,6 +138,20 @@ namespace AbstractQuery
 		{
 			this.FieldName = fieldName;
 			this.Direction = direction;
+		}
+	}
+
+	public class InnerJoinElement
+	{
+		public string TableName { get; set; }
+		public string FieldName1 { get; set; }
+		public string FieldName2 { get; set; }
+
+		public InnerJoinElement(string tableName, string fieldName1, string fieldName2)
+		{
+			this.TableName = tableName;
+			this.FieldName1 = fieldName1;
+			this.FieldName2 = fieldName2;
 		}
 	}
 
