@@ -48,9 +48,30 @@ namespace AbstractQuery.Tests.MySql
 			queryString = new SqlQueryBuilder().GetQueryString(query);
 			Assert.Equal("SELECT `testId` FROM `test` AS `t` WHERE `answer` = 42 AND `name` LIKE \"test%\" ;", queryString);
 
+
+			query = Query.Select("*").From("test").Where("answer", Is.LowerThen, 42);
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test` WHERE `answer` < 42 ;", queryString);
+
+			query = Query.Select("*").From("test").Where("answer", Is.LowerEqualThen, 42);
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test` WHERE `answer` <= 42 ;", queryString);
+
+			query = Query.Select("*").From("test").Where("answer", Is.GreaterThen, 42);
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test` WHERE `answer` > 42 ;", queryString);
+
+			query = Query.Select("*").From("test").Where("answer", Is.GreaterEqualThen, 42);
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test` WHERE `answer` >= 42 ;", queryString);
+
 			query = Query.Select("*").From("test").Where("answer", Is.Equal, 42);
 			queryString = new SqlQueryBuilder().GetQueryString(query);
 			Assert.Equal("SELECT * FROM `test` WHERE `answer` = 42 ;", queryString);
+
+			query = Query.Select("*").From("test").Where("answer", Is.Like, 42);
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test` WHERE `answer` LIKE \"42\" ;", queryString);
 		}
 
 		[Fact]
