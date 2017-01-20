@@ -23,11 +23,11 @@ namespace AbstractQuery.MySql
 			var sb = new StringBuilder();
 
 			var select = query.SelectElement;
-			var from = query.FromElement;
+			var froms = query.FromElements;
 			var orderBys = query.OrderByElements;
 			var innerJoins = query.InnerJoinElements;
 
-			if (from == null)
+			if (froms == null || !froms.Any())
 				throw new InvalidOperationException("Expected 'From' element in query.");
 
 			// SELECT
@@ -48,10 +48,25 @@ namespace AbstractQuery.MySql
 			}
 
 			// FROM
-			if (from.ShortName == null)
-				sb.AppendFormat("FROM `{0}` ", from.TableName);
-			else
-				sb.AppendFormat("FROM `{0}` AS `{1}` ", from.TableName, from.ShortName);
+			{
+				var i = 0;
+				var count = froms.Count;
+
+				sb.Append("FROM ");
+
+				foreach (var from in froms)
+				{
+					if (from.ShortName == null)
+						sb.AppendFormat("`{0}`", from.TableName);
+					else
+						sb.AppendFormat("`{0}` AS `{1}`", from.TableName, from.ShortName);
+
+					if (++i != count)
+						sb.Append(", ");
+					else
+						sb.Append(" ");
+				}
+			}
 
 			// INNER JOIN
 			if (innerJoins != null && innerJoins.Any())

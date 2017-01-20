@@ -5,7 +5,7 @@ namespace AbstractQuery
 	public class Query
 	{
 		public SelectElement SelectElement { get; set; }
-		public FromElement FromElement { get; set; }
+		public List<FromElement> FromElements { get; set; }
 		public List<WhereElement> WhereElements { get; set; }
 		public List<OrderByElement> OrderByElements { get; set; }
 		public List<InnerJoinElement> InnerJoinElements { get; set; }
@@ -53,7 +53,12 @@ namespace AbstractQuery
 
 		public Query From(string tableName, string shortName = null)
 		{
-			this.FromElement = new FromElement(tableName, shortName);
+			var element = new FromElement(tableName, shortName);
+
+			if (this.FromElements == null)
+				this.FromElements = new List<FromElement>();
+
+			this.FromElements.Add(element);
 
 			return this;
 		}
