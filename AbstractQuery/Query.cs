@@ -194,6 +194,7 @@ namespace AbstractQuery
 		GreaterEqualThen,
 		Equal,
 		Like,
+		NotLike,
 	}
 
 	public enum OrderDirection

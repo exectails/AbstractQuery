@@ -69,9 +69,13 @@ namespace AbstractQuery.Tests.MySql
 			queryString = new SqlQueryBuilder().GetQueryString(query);
 			Assert.Equal("SELECT * FROM `test` WHERE `answer` = 42 ;", queryString);
 
-			query = Query.Select("*").From("test").Where("answer", Is.Like, 42);
+			query = Query.Select("*").From("test").Where("answer", Is.Like, "42");
 			queryString = new SqlQueryBuilder().GetQueryString(query);
 			Assert.Equal("SELECT * FROM `test` WHERE `answer` LIKE \"42\" ;", queryString);
+
+			query = Query.Select("*").From("test").Where("answer", Is.NotLike, "42");
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test` WHERE `answer` NOT LIKE \"42\" ;", queryString);
 		}
 
 		[Fact]
