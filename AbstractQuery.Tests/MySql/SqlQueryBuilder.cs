@@ -24,6 +24,14 @@ namespace AbstractQuery.Tests.MySql
 			queryString = new SqlQueryBuilder().GetQueryString(query);
 			Assert.Equal("SELECT `testId` FROM `test` AS `t` ;", queryString);
 
+			query = Query.Select("t.testId").From("test", "t");
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT `t`.`testId` FROM `test` AS `t` ;", queryString);
+
+			query = Query.Select("t.testId", "t.name").From("test", "t");
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT `t`.`testId`, `t`.`name` FROM `test` AS `t` ;", queryString);
+
 			query = Query.Select("testId").From("test", "t").Where("answer", Is.Equal, 42);
 			queryString = new SqlQueryBuilder().GetQueryString(query);
 			Assert.Equal("SELECT `testId` FROM `test` AS `t` WHERE `answer` = 42 ;", queryString);
@@ -50,15 +58,15 @@ namespace AbstractQuery.Tests.MySql
 
 			query = Query.Select("*").From("test1").InnerJoin("test2", "test1.testId", "test2.testId");
 			queryString = new SqlQueryBuilder().GetQueryString(query);
-			Assert.Equal("SELECT * FROM `test1` INNER JOIN `test2` ON `test1.testId` = `test2.testId` ;", queryString);
+			Assert.Equal("SELECT * FROM `test1` INNER JOIN `test2` ON `test1`.`testId` = `test2`.`testId` ;", queryString);
 
 			query = Query.Select("*").From("test1").InnerJoin("test2", "test1.testId", "test2.testId").OrderBy("testId");
 			queryString = new SqlQueryBuilder().GetQueryString(query);
-			Assert.Equal("SELECT * FROM `test1` INNER JOIN `test2` ON `test1.testId` = `test2.testId` ORDER BY `testId` ASC ;", queryString);
+			Assert.Equal("SELECT * FROM `test1` INNER JOIN `test2` ON `test1`.`testId` = `test2`.`testId` ORDER BY `testId` ASC ;", queryString);
 
 			query = Query.Select("*").From("test1").InnerJoin("test2", "test1.testId", "test2.testId").InnerJoin("test3", "test1.testId", "test3.testId");
 			queryString = new SqlQueryBuilder().GetQueryString(query);
-			Assert.Equal("SELECT * FROM `test1` INNER JOIN `test2` ON `test1.testId` = `test2.testId` INNER JOIN `test3` ON `test1.testId` = `test3.testId` ;", queryString);
+			Assert.Equal("SELECT * FROM `test1` INNER JOIN `test2` ON `test1`.`testId` = `test2`.`testId` INNER JOIN `test3` ON `test1`.`testId` = `test3`.`testId` ;", queryString);
 		}
 	}
 }

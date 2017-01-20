@@ -37,14 +37,9 @@ namespace AbstractQuery.MySql
 				var count = select.FieldNames.Count;
 				foreach (var fieldName in select.FieldNames)
 				{
-					var name = fieldName;
-
-					if (name != "*")
-					{
-						name = '`' + name + '`';
-					}
-
+					var name = QuoteFieldName(fieldName);
 					sb.Append(name);
+
 					if (++i != count)
 						sb.Append(", ");
 					else
@@ -65,8 +60,8 @@ namespace AbstractQuery.MySql
 				{
 					sb.AppendFormat("INNER JOIN `{0}` ", innerJoin.TableName);
 
-					var name1 = '`' + innerJoin.FieldName1 + '`';
-					var name2 = '`' + innerJoin.FieldName2 + '`';
+					var name1 = QuoteFieldName(innerJoin.FieldName1);
+					var name2 = QuoteFieldName(innerJoin.FieldName2);
 
 					sb.AppendFormat("ON {0} = {1} ", name1, name2);
 				}
@@ -85,10 +80,7 @@ namespace AbstractQuery.MySql
 
 				foreach (var orderBy in orderBys)
 				{
-					var name = orderBy.FieldName;
-
-					if (name != "*")
-						name = '`' + name + '`';
+					var name = QuoteFieldName(orderBy.FieldName);
 
 					sb.Append(name);
 					if (orderBy.Direction == OrderDirection.Ascending)
@@ -121,7 +113,8 @@ namespace AbstractQuery.MySql
 
 			foreach (var where in query.WhereElements)
 			{
-				sb.AppendFormat("`{0}` ", where.FieldName);
+				var fieldName = QuoteFieldName(where.FieldName);
+				sb.AppendFormat("{0} ", fieldName);
 
 				var op = "=";
 				switch (where.Comparison)
@@ -145,6 +138,21 @@ namespace AbstractQuery.MySql
 				if (++i < count)
 					sb.Append("AND ");
 			}
+		}
+
+		private static string QuoteFieldName(string fieldName)
+		{
+			if (fieldName == "*")
+				return fieldName;
+
+			var index = fieldName.IndexOf('.');
+			if (index == -1)
+				return string.Format("`{0}`", fieldName);
+
+			var tableName = fieldName.Substring(0, index);
+			fieldName = fieldName.Remove(0, index + 1);
+
+			return string.Format("`{0}`.`{1}`", tableName, fieldName);
 		}
 	}
 }
