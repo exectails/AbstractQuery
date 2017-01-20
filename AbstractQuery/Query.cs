@@ -5,6 +5,8 @@ namespace AbstractQuery
 	public class Query
 	{
 		public SelectElement SelectElement { get; set; }
+		public LimitElement LimitElement { get; set; }
+
 		public List<FromElement> FromElements { get; set; }
 		public List<WhereElement> WhereElements { get; set; }
 		public List<OrderByElement> OrderByElements { get; set; }
@@ -98,6 +100,18 @@ namespace AbstractQuery
 
 			return this;
 		}
+
+		public Query Limit(int count)
+		{
+			return this.Limit(0, count);
+		}
+
+		public Query Limit(int start, int count)
+		{
+			this.LimitElement = new LimitElement(start, count);
+
+			return this;
+		}
 	}
 
 	public class SelectElement
@@ -157,6 +171,18 @@ namespace AbstractQuery
 			this.TableName = tableName;
 			this.FieldName1 = fieldName1;
 			this.FieldName2 = fieldName2;
+		}
+	}
+
+	public class LimitElement
+	{
+		public int Start { get; set; }
+		public int Count { get; set; }
+
+		public LimitElement(int start, int count)
+		{
+			this.Start = start;
+			this.Count = count;
 		}
 	}
 

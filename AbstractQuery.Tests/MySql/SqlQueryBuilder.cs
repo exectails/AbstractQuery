@@ -84,5 +84,21 @@ namespace AbstractQuery.Tests.MySql
 			queryString = new SqlQueryBuilder().GetQueryString(query);
 			Assert.Equal("SELECT * FROM `test1` INNER JOIN `test2` ON `test1`.`testId` = `test2`.`testId` INNER JOIN `test3` ON `test1`.`testId` = `test3`.`testId` ;", queryString);
 		}
+
+		[Fact]
+		public void SelectLimit()
+		{
+			var query = Query.Select("*").From("test").Limit(10);
+			var queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test` LIMIT 0, 10 ;", queryString);
+
+			query = Query.Select("*").From("test").Limit(100, 10);
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test` LIMIT 100, 10 ;", queryString);
+
+			query = Query.Select("*").From("test").OrderBy("testId").Limit(10);
+			queryString = new SqlQueryBuilder().GetQueryString(query);
+			Assert.Equal("SELECT * FROM `test` ORDER BY `testId` ASC LIMIT 0, 10 ;", queryString);
+		}
 	}
 }

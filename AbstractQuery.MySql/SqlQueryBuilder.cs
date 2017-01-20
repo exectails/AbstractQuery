@@ -26,6 +26,7 @@ namespace AbstractQuery.MySql
 			var froms = query.FromElements;
 			var orderBys = query.OrderByElements;
 			var innerJoins = query.InnerJoinElements;
+			var limit = query.LimitElement;
 
 			if (froms == null || !froms.Any())
 				throw new InvalidOperationException("Expected 'From' element in query.");
@@ -108,6 +109,12 @@ namespace AbstractQuery.MySql
 					else
 						sb.Append(" ");
 				}
+			}
+
+			// LIMIT
+			if (limit != null)
+			{
+				sb.AppendFormat("LIMIT {0}, {1} ", limit.Start, limit.Count);
 			}
 
 			// END
