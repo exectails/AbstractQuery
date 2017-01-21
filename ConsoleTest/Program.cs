@@ -14,7 +14,7 @@ namespace ConsoleTest
 				var count = 0;
 
 				var query = Query.Select("*").From("accounts").Where("authority", Is.GreaterEqualThen, 0).OrderBy("authority", OrderDirection.Descending);
-				using (var reader = db.Execute(query, conn))
+				using (var reader = db.ExecuteReader(query, conn))
 				{
 					while (reader.Read())
 					{
@@ -24,7 +24,7 @@ namespace ConsoleTest
 				}
 
 				query = Query.InsertInto("accounts").Value("accountId", "test" + count).Value("authority", 1);
-				using (var reader = db.Execute(query, conn))
+				using (var reader = db.ExecuteReader(query, conn))
 				{
 				}
 
@@ -32,7 +32,7 @@ namespace ConsoleTest
 				Console.ReadLine();
 
 				query = Query.Delete().From("accounts").Where("accountId", Is.Equal, "test" + count);
-				using (var reader = db.Execute(query, conn))
+				using (var reader = db.ExecuteReader(query, conn))
 				{
 				}
 			}

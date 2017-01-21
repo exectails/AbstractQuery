@@ -24,7 +24,7 @@ namespace AbstractQuery.MySql
 			return result;
 		}
 
-		public QueryResult Execute(Query query, IDbConnection connection, IDbTransaction transaction = null)
+		public QueryResult ExecuteReader(Query query, IDbConnection connection, IDbTransaction transaction = null)
 		{
 			var mySqlConnction = connection as MySqlConnection;
 			var mySqlTransaction = transaction as MySqlTransaction;

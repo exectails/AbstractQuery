@@ -5,6 +5,6 @@ namespace AbstractQuery
 	public interface IDatabase
 	{
 		IDbConnection GetConnection();
-		QueryResult Execute(Query query, IDbConnection connection, IDbTransaction transaction = null);
+		QueryResult ExecuteReader(Query query, IDbConnection connection, IDbTransaction transaction = null);
 	}
 }
