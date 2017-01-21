@@ -31,6 +31,8 @@ namespace AbstractQuery.MySql
 
 			if (query.SelectElement != null)
 				return this.GetSelectQueryString(query, parameterize);
+			else if (query.InsertIntoElement != null)
+				return this.GetInsertIntoQueryString(query, parameterize);
 
 			throw new InvalidOperationException("Unknown query type.");
 		}
@@ -140,6 +142,57 @@ namespace AbstractQuery.MySql
 			return sb.ToString();
 		}
 
+		private string GetInsertIntoQueryString(Query query, bool parameterize)
+		{
+			var sb = new StringBuilder();
+
+			var insertInto = query.InsertIntoElement;
+			var values = query.FieldValueElements;
+
+			if (values == null || !values.Any())
+				throw new InvalidOperationException("Expected values for insert.");
+
+			var fieldNames = string.Join(", ", values.Select(a => QuoteFieldName(a.FieldName)));
+
+			// INSERT INTO
+			sb.AppendFormat("INSERT INTO `{0}` ", insertInto.TableName);
+
+			sb.Append("(");
+			{
+				var i = 0;
+				var count = values.Count;
+
+				foreach (var value in values)
+				{
+					var fieldName = QuoteFieldName(value.FieldName);
+					sb.Append(fieldName);
+
+					if (++i != count)
+						sb.Append(", ");
+				}
+			}
+			sb.Append(") ");
+
+			// VALUES
+			sb.Append("VALUES (");
+			{
+				var i = 0;
+				var count = values.Count;
+
+				foreach (var value in values)
+				{
+					var fieldValue = this.PrepareValue(value.Value, parameterize);
+					sb.Append(fieldValue);
+
+					if (++i != count)
+						sb.Append(", ");
+				}
+			}
+			sb.Append(") ;");
+
+			return sb.ToString();
+		}
+
 		private void AppendWheres(StringBuilder sb, Query query, bool parameterize)
 		{
 			if (query.WhereElements == null || !query.WhereElements.Any())
@@ -172,29 +225,7 @@ namespace AbstractQuery.MySql
 
 				sb.AppendFormat("{0} ", op);
 
-				var value = where.Value;
-
-				if (parameterize)
-				{
-					var parameterName = "@p" + _parameterCount;
-					_parameters[parameterName] = value;
-					_parameterCount++;
-
-					value = parameterName;
-				}
-				else if (value == null)
-				{
-					value = "NULL";
-				}
-				else if (value is bool)
-				{
-					value = value.ToString().ToUpper();
-				}
-				else if ((value is string) || !(value is sbyte || value is byte || value is short || value is ushort || value is int || value is uint || value is long || value is ulong || value is float || value is double || value is decimal))
-				{
-					value = '"' + value.ToString() + '"';
-				}
-
+				var value = this.PrepareValue(where.Value, parameterize);
 				sb.AppendFormat("{0} ", value);
 
 				if (++i < count)
@@ -215,6 +246,38 @@ namespace AbstractQuery.MySql
 			fieldName = fieldName.Remove(0, index + 1);
 
 			return string.Format("`{0}`.`{1}`", tableName, fieldName);
+		}
+
+		private string PrepareValue(object value, bool parameterize)
+		{
+			string result = null;
+
+			if (parameterize)
+			{
+				var parameterName = "@p" + _parameterCount;
+				_parameters[parameterName] = value;
+				_parameterCount++;
+
+				result = parameterName;
+			}
+			else if (value == null)
+			{
+				result = "NULL";
+			}
+			else if (value is bool)
+			{
+				result = value.ToString().ToUpper();
+			}
+			else if ((value is string) || !(value is sbyte || value is byte || value is short || value is ushort || value is int || value is uint || value is long || value is ulong || value is float || value is double || value is decimal))
+			{
+				result = '"' + value.ToString() + '"';
+			}
+			else
+			{
+				result = value.ToString();
+			}
+
+			return result;
 		}
 	}
 }

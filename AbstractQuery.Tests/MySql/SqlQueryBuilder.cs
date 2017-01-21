@@ -168,5 +168,47 @@ namespace AbstractQuery.Tests.MySql
 			Assert.Equal("@p1", parameters.Keys.ElementAt(1));
 			Assert.Equal(20, parameters.Values.ElementAt(1));
 		}
+
+		[Fact]
+		public void InsertInto()
+		{
+			var query = Query.InsertInto("accounts").Value("accountId", 1234);
+			var builder = new SqlQueryBuilder();
+			var queryString = builder.GetQueryString(query);
+
+			Assert.Equal("INSERT INTO `accounts` (`accountId`) VALUES (1234) ;", queryString);
+
+			query = Query.InsertInto("accounts").Value("accountId", 12345).Value("name", "Foobar");
+			builder = new SqlQueryBuilder();
+			queryString = builder.GetQueryString(query);
+
+			Assert.Equal("INSERT INTO `accounts` (`accountId`, `name`) VALUES (12345, \"Foobar\") ;", queryString);
+		}
+
+		[Fact]
+		public void InsertIntoParameters()
+		{
+			var query = Query.InsertInto("accounts").Value("accountId", 1234);
+			var builder = new SqlQueryBuilder();
+			var queryString = builder.GetQueryString(query, true);
+			var parameters = builder.GetParameters();
+
+			Assert.Equal("INSERT INTO `accounts` (`accountId`) VALUES (@p0) ;", queryString);
+			Assert.Equal(1, parameters.Count);
+			Assert.Equal("@p0", parameters.Keys.ElementAt(0));
+			Assert.Equal(1234, parameters.Values.ElementAt(0));
+
+			query = Query.InsertInto("accounts").Value("accountId", 12345).Value("name", "Foobar");
+			builder = new SqlQueryBuilder();
+			queryString = builder.GetQueryString(query, true);
+			parameters = builder.GetParameters();
+
+			Assert.Equal("INSERT INTO `accounts` (`accountId`, `name`) VALUES (@p0, @p1) ;", queryString);
+			Assert.Equal(2, parameters.Count);
+			Assert.Equal("@p0", parameters.Keys.ElementAt(0));
+			Assert.Equal(12345, parameters.Values.ElementAt(0));
+			Assert.Equal("@p1", parameters.Keys.ElementAt(1));
+			Assert.Equal("Foobar", parameters.Values.ElementAt(1));
+		}
 	}
 }
