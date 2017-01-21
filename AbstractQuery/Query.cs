@@ -14,6 +14,8 @@ namespace AbstractQuery
 		public InsertIntoElement InsertIntoElement { get; set; }
 		public List<FieldValueElement> FieldValueElements { get; set; }
 
+		public DeleteElement DeleteElement { get; set; }
+
 		protected Query()
 		{
 		}
@@ -43,12 +45,14 @@ namespace AbstractQuery
 		//	return query;
 		//}
 
-		//public static Query Delete(string fieldName)
-		//{
-		//	var query = new Query();
+		public static Query Delete()
+		{
+			var query = new Query();
 
-		//	return query;
-		//}
+			query.DeleteElement = new DeleteElement();
+
+			return query;
+		}
 
 		//public static Query Create(string fieldName)
 		//{
@@ -221,6 +225,13 @@ namespace AbstractQuery
 		{
 			this.FieldName = fieldName;
 			this.Value = value;
+		}
+	}
+
+	public class DeleteElement
+	{
+		public DeleteElement()
+		{
 		}
 	}
 
