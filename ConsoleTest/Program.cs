@@ -24,17 +24,13 @@ namespace ConsoleTest
 				}
 
 				query = Query.InsertInto("accounts").Value("accountId", "test" + count).Value("authority", 1);
-				using (var reader = db.ExecuteReader(query, conn))
-				{
-				}
+				Console.WriteLine("Inserted records: " + db.Execute(query, conn));
 
 				Console.WriteLine("Press [Return] to delete the new account.");
 				Console.ReadLine();
 
 				query = Query.Delete().From("accounts").Where("accountId", Is.Equal, "test" + count);
-				using (var reader = db.ExecuteReader(query, conn))
-				{
-				}
+				Console.WriteLine("Deleted records: " + db.Execute(query, conn));
 			}
 
 			Console.ReadLine();

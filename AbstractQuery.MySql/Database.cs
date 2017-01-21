@@ -26,6 +26,23 @@ namespace AbstractQuery.MySql
 
 		public QueryResult ExecuteReader(Query query, IDbConnection connection, IDbTransaction transaction = null)
 		{
+			var mc = this.GetMySqlCommand(query, connection, transaction);
+			var reader = mc.ExecuteReader();
+			var result = new MySqlQueryResult(reader);
+
+			return result;
+		}
+
+		public int Execute(Query query, IDbConnection connection, IDbTransaction transaction = null)
+		{
+			var mc = this.GetMySqlCommand(query, connection, transaction);
+			var result = mc.ExecuteNonQuery();
+
+			return result;
+		}
+
+		private MySqlCommand GetMySqlCommand(Query query, IDbConnection connection, IDbTransaction transaction)
+		{
 			var mySqlConnction = connection as MySqlConnection;
 			var mySqlTransaction = transaction as MySqlTransaction;
 
@@ -40,10 +57,7 @@ namespace AbstractQuery.MySql
 			foreach (var parameter in parameters)
 				mc.Parameters.AddWithValue(parameter.Key, parameter.Value);
 
-			var reader = mc.ExecuteReader();
-			var result = new MySqlQueryResult(reader);
-
-			return result;
+			return mc;
 		}
 	}
 }
