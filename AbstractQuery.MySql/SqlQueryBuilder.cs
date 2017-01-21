@@ -68,25 +68,7 @@ namespace AbstractQuery.MySql
 			}
 
 			// FROM
-			{
-				var i = 0;
-				var count = froms.Count;
-
-				sb.Append("FROM ");
-
-				foreach (var from in froms)
-				{
-					if (from.ShortName == null)
-						sb.AppendFormat("`{0}`", from.TableName);
-					else
-						sb.AppendFormat("`{0}` AS `{1}`", from.TableName, from.ShortName);
-
-					if (++i != count)
-						sb.Append(", ");
-					else
-						sb.Append(" ");
-				}
-			}
+			this.AppendFroms(sb, froms, parameterize);
 
 			// INNER JOIN
 			if (innerJoins != null && innerJoins.Any())
@@ -140,6 +122,27 @@ namespace AbstractQuery.MySql
 			sb.Append(";");
 
 			return sb.ToString();
+		}
+
+		private void AppendFroms(StringBuilder sb, List<FromElement> froms, bool parameterize)
+		{
+			var i = 0;
+			var count = froms.Count;
+
+			sb.Append("FROM ");
+
+			foreach (var from in froms)
+			{
+				if (from.ShortName == null)
+					sb.AppendFormat("`{0}`", from.TableName);
+				else
+					sb.AppendFormat("`{0}` AS `{1}`", from.TableName, from.ShortName);
+
+				if (++i != count)
+					sb.Append(", ");
+				else
+					sb.Append(" ");
+			}
 		}
 
 		private string GetInsertIntoQueryString(Query query, bool parameterize)
