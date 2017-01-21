@@ -178,16 +178,22 @@ namespace AbstractQuery.MySql
 					_parameters[parameterName] = value;
 					_parameterCount++;
 
-					sb.AppendFormat("{0} ", parameterName);
+					value = parameterName;
+				}
+				else if (value == null)
+				{
+					value = "NULL";
+				}
+				else if (value is bool)
+				{
+					value = value.ToString().ToUpper();
 				}
 				else if ((value is string) || !(value is sbyte || value is byte || value is short || value is ushort || value is int || value is uint || value is long || value is ulong || value is float || value is double || value is decimal))
 				{
-					sb.AppendFormat("\"{0}\" ", where.Value);
+					value = '"' + value.ToString() + '"';
 				}
-				else
-				{
-					sb.AppendFormat("{0} ", where.Value);
-				}
+
+				sb.AppendFormat("{0} ", value);
 
 				if (++i < count)
 					sb.Append("AND ");
