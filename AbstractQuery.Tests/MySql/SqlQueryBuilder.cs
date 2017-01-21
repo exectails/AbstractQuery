@@ -1,4 +1,5 @@
 ﻿using AbstractQuery.MySql;
+using System.Linq;
 using Xunit;
 
 namespace AbstractQuery.Tests.MySql
@@ -128,6 +129,32 @@ namespace AbstractQuery.Tests.MySql
 			query = Query.Select("*").From("test").OrderBy("testId").Limit(10);
 			queryString = new SqlQueryBuilder().GetQueryString(query);
 			Assert.Equal("SELECT * FROM `test` ORDER BY `testId` ASC LIMIT 0, 10 ;", queryString);
+		}
+
+		[Fact]
+		public void SelectWhereParameters()
+		{
+			var query = Query.Select("*").From("test").Where("name", Is.Equal, "admin");
+			var builder = new SqlQueryBuilder();
+			var queryString = builder.GetQueryString(query, true);
+			var parameters = builder.GetParameters();
+
+			Assert.Equal("SELECT * FROM `test` WHERE `name` = @p0 ;", queryString);
+			Assert.Equal(1, parameters.Count);
+			Assert.Equal("@p0", parameters.Keys.First());
+			Assert.Equal("admin", parameters.Values.First());
+
+			query = Query.Select("*").From("test").Where("testId", Is.GreaterEqualThen, 10).Where("testId", Is.LowerEqualThen, 20);
+			builder = new SqlQueryBuilder();
+			queryString = builder.GetQueryString(query, true);
+			parameters = builder.GetParameters();
+
+			Assert.Equal("SELECT * FROM `test` WHERE `testId` >= @p0 AND `testId` <= @p1 ;", queryString);
+			Assert.Equal(2, parameters.Count);
+			Assert.Equal("@p0", parameters.Keys.ElementAt(0));
+			Assert.Equal(10, parameters.Values.ElementAt(0));
+			Assert.Equal("@p1", parameters.Keys.ElementAt(1));
+			Assert.Equal(20, parameters.Values.ElementAt(1));
 		}
 	}
 }

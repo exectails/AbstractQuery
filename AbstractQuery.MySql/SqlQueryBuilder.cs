@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -6,19 +7,35 @@ namespace AbstractQuery.MySql
 {
 	public class SqlQueryBuilder
 	{
+		private Dictionary<string, object> _parameters = new Dictionary<string, object>();
+		private int _parameterCount;
+
 		public SqlQueryBuilder()
 		{
 		}
 
+		public IDictionary<string, object> GetParameters()
+		{
+			return _parameters;
+		}
+
 		public string GetQueryString(Query query)
 		{
+			return this.GetQueryString(query, false);
+		}
+
+		public string GetQueryString(Query query, bool parameterize)
+		{
+			_parameters.Clear();
+			_parameterCount = 0;
+
 			if (query.SelectElement != null)
-				return this.GetSelectQueryString(query);
+				return this.GetSelectQueryString(query, parameterize);
 
 			throw new InvalidOperationException("Unknown query type.");
 		}
 
-		private string GetSelectQueryString(Query query)
+		private string GetSelectQueryString(Query query, bool parameterize)
 		{
 			var sb = new StringBuilder();
 
@@ -84,7 +101,7 @@ namespace AbstractQuery.MySql
 			}
 
 			// WHERE
-			this.AppendWheres(sb, query);
+			this.AppendWheres(sb, query, parameterize);
 
 			// ORDER BY
 			if (orderBys != null && orderBys.Any())
@@ -123,7 +140,7 @@ namespace AbstractQuery.MySql
 			return sb.ToString();
 		}
 
-		private void AppendWheres(StringBuilder sb, Query query)
+		private void AppendWheres(StringBuilder sb, Query query, bool parameterize)
 		{
 			if (query.WhereElements == null || !query.WhereElements.Any())
 				return;
@@ -154,10 +171,23 @@ namespace AbstractQuery.MySql
 				sb.AppendFormat("{0} ", op);
 
 				var value = where.Value;
-				if ((value is string) || !(value is sbyte || value is byte || value is short || value is ushort || value is int || value is uint || value is long || value is ulong || value is float || value is double || value is decimal))
+
+				if (parameterize)
+				{
+					var parameterName = "@p" + _parameterCount;
+					_parameters[parameterName] = value;
+					_parameterCount++;
+
+					sb.AppendFormat("{0} ", parameterName);
+				}
+				else if ((value is string) || !(value is sbyte || value is byte || value is short || value is ushort || value is int || value is uint || value is long || value is ulong || value is float || value is double || value is decimal))
+				{
 					sb.AppendFormat("\"{0}\" ", where.Value);
+				}
 				else
+				{
 					sb.AppendFormat("{0} ", where.Value);
+				}
 
 				if (++i < count)
 					sb.Append("AND ");

@@ -32,8 +32,13 @@ namespace AbstractQuery.MySql
 			if (mySqlConnction == null)
 				throw new InvalidOperationException("Connection can't be null.");
 
-			var queryString = new SqlQueryBuilder().GetQueryString(query);
+			var builder = new SqlQueryBuilder();
+			var queryString = builder.GetQueryString(query, true);
+			var parameters = builder.GetParameters();
+
 			var mc = new MySqlCommand(queryString, mySqlConnction, mySqlTransaction);
+			foreach (var parameter in parameters)
+				mc.Parameters.AddWithValue(parameter.Key, parameter.Value);
 
 			var reader = mc.ExecuteReader();
 			var result = new MySqlQueryResult(reader);
