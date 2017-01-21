@@ -27,6 +27,14 @@ namespace ConsoleTest
 				using (var reader = db.Execute(query, conn))
 				{
 				}
+
+				Console.WriteLine("Press [Return] to delete the new account.");
+				Console.ReadLine();
+
+				query = Query.Delete().From("accounts").Where("accountId", Is.Equal, "test" + count);
+				using (var reader = db.Execute(query, conn))
+				{
+				}
 			}
 
 			Console.ReadLine();

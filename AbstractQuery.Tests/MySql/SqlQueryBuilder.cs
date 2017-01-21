@@ -231,5 +231,55 @@ namespace AbstractQuery.Tests.MySql
 			Assert.Equal("@p1", parameters.Keys.ElementAt(1));
 			Assert.Equal("Foobar", parameters.Values.ElementAt(1));
 		}
+
+		[Fact]
+		public void Delete()
+		{
+			var query = Query.Delete().From("accounts").Where("accountId", Is.Equal, 9876);
+			var builder = new SqlQueryBuilder();
+			var queryString = builder.GetQueryString(query);
+
+			Assert.Equal("DELETE FROM `accounts` WHERE `accountId` = 9876 ;", queryString);
+
+			query = Query.Delete().From("accounts").From("more_accounts").Where("accountId", Is.Equal, 98765).Where("foo", Is.NotEqual, "bar");
+			builder = new SqlQueryBuilder();
+			queryString = builder.GetQueryString(query);
+
+			Assert.Equal("DELETE FROM `accounts`, `more_accounts` WHERE `accountId` = 98765 AND `foo` != \"bar\" ;", queryString);
+		}
+
+		[Fact]
+		public void DeleteParameters()
+		{
+			var query = Query.Delete().From("accounts");
+			var builder = new SqlQueryBuilder();
+			var queryString = builder.GetQueryString(query, true);
+			var parameters = builder.GetParameters();
+
+			Assert.Equal("DELETE FROM `accounts` ;", queryString);
+			Assert.Equal(0, parameters.Count);
+
+			query = Query.Delete().From("accounts").Where("accountId", Is.Equal, 9876);
+			builder = new SqlQueryBuilder();
+			queryString = builder.GetQueryString(query, true);
+			parameters = builder.GetParameters();
+
+			Assert.Equal("DELETE FROM `accounts` WHERE `accountId` = @p0 ;", queryString);
+			Assert.Equal(1, parameters.Count);
+			Assert.Equal("@p0", parameters.Keys.ElementAt(0));
+			Assert.Equal(9876, parameters.Values.ElementAt(0));
+
+			query = Query.Delete().From("accounts").From("more_accounts").Where("accountId", Is.Equal, 98765).Where("foo", Is.NotEqual, "bar");
+			builder = new SqlQueryBuilder();
+			queryString = builder.GetQueryString(query, true);
+			parameters = builder.GetParameters();
+
+			Assert.Equal("DELETE FROM `accounts`, `more_accounts` WHERE `accountId` = @p0 AND `foo` != @p1 ;", queryString);
+			Assert.Equal(2, parameters.Count);
+			Assert.Equal("@p0", parameters.Keys.ElementAt(0));
+			Assert.Equal(98765, parameters.Values.ElementAt(0));
+			Assert.Equal("@p1", parameters.Keys.ElementAt(1));
+			Assert.Equal("bar", parameters.Values.ElementAt(1));
+		}
 	}
 }

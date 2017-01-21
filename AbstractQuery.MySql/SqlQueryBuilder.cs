@@ -33,6 +33,8 @@ namespace AbstractQuery.MySql
 				return this.GetSelectQueryString(query, parameterize);
 			else if (query.InsertIntoElement != null)
 				return this.GetInsertIntoQueryString(query, parameterize);
+			else if (query.DeleteElement != null)
+				return this.GetDeleteQueryString(query, parameterize);
 
 			throw new InvalidOperationException("Unknown query type.");
 		}
@@ -48,7 +50,7 @@ namespace AbstractQuery.MySql
 			var limit = query.LimitElement;
 
 			if (froms == null || !froms.Any())
-				throw new InvalidOperationException("Expected 'From' element in query.");
+				throw new InvalidOperationException("Expected 'From' elements in query.");
 
 			// SELECT
 			sb.Append("SELECT ");
@@ -281,6 +283,29 @@ namespace AbstractQuery.MySql
 			}
 
 			return result;
+		}
+
+		private string GetDeleteQueryString(Query query, bool parameterize)
+		{
+			var froms = query.FromElements;
+
+			if (froms == null || !froms.Any())
+				throw new InvalidOperationException("Expected 'From' elements in query.");
+
+			var sb = new StringBuilder();
+
+			// DELETE
+			sb.Append("DELETE ");
+
+			// FROM
+			this.AppendFroms(sb, froms, parameterize);
+
+			// WHERE
+			this.AppendWheres(sb, query, parameterize);
+
+			sb.Append(";");
+
+			return sb.ToString();
 		}
 	}
 }
