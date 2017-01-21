@@ -5,12 +5,14 @@ namespace AbstractQuery
 	public class Query
 	{
 		public SelectElement SelectElement { get; set; }
-		public LimitElement LimitElement { get; set; }
-
 		public List<FromElement> FromElements { get; set; }
 		public List<WhereElement> WhereElements { get; set; }
 		public List<OrderByElement> OrderByElements { get; set; }
 		public List<InnerJoinElement> InnerJoinElements { get; set; }
+		public LimitElement LimitElement { get; set; }
+
+		public InsertIntoElement InsertIntoElement { get; set; }
+		public List<FieldValueElement> FieldValueElements { get; set; }
 
 		protected Query()
 		{
@@ -25,12 +27,14 @@ namespace AbstractQuery
 			return query;
 		}
 
-		//public static Query InsertInto(string tableName)
-		//{
-		//	var query = new Query();
+		public static Query InsertInto(string tableName)
+		{
+			var query = new Query();
 
-		//	return query;
-		//}
+			query.InsertIntoElement = new InsertIntoElement(tableName);
+
+			return query;
+		}
 
 		//public static Query Update(string fieldName, object newValue)
 		//{
@@ -112,6 +116,18 @@ namespace AbstractQuery
 
 			return this;
 		}
+
+		public Query Value(string fieldName, object value)
+		{
+			var element = new FieldValueElement(fieldName, value);
+
+			if (this.FieldValueElements == null)
+				this.FieldValueElements = new List<FieldValueElement>();
+
+			this.FieldValueElements.Add(element);
+
+			return this;
+		}
 	}
 
 	public class SelectElement
@@ -183,6 +199,28 @@ namespace AbstractQuery
 		{
 			this.Start = start;
 			this.Count = count;
+		}
+	}
+
+	public class InsertIntoElement
+	{
+		public string TableName { get; set; }
+
+		public InsertIntoElement(string tableName)
+		{
+			this.TableName = tableName;
+		}
+	}
+
+	public class FieldValueElement
+	{
+		public string FieldName { get; set; }
+		public object Value { get; set; }
+
+		public FieldValueElement(string fieldName, object value)
+		{
+			this.FieldName = fieldName;
+			this.Value = value;
 		}
 	}
 
