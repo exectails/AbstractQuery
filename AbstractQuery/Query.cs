@@ -196,6 +196,8 @@ namespace AbstractQuery
 		NotEqual,
 		Like,
 		NotLike,
+		Is,
+		IsNot,
 	}
 
 	public enum OrderDirection

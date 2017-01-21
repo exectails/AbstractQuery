@@ -166,6 +166,8 @@ namespace AbstractQuery.MySql
 					case Is.NotEqual: op = "!="; break;
 					case Is.Like: op = "LIKE"; break;
 					case Is.NotLike: op = "NOT LIKE"; break;
+					case Is.Is: op = "IS"; break;
+					case Is.IsNot: op = "IS NOT"; break;
 				}
 
 				sb.AppendFormat("{0} ", op);
