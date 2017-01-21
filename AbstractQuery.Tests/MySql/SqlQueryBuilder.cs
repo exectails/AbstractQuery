@@ -1,4 +1,5 @@
 ﻿using AbstractQuery.MySql;
+using System;
 using System.Linq;
 using Xunit;
 
@@ -36,6 +37,16 @@ namespace AbstractQuery.Tests.MySql
 			query = Query.Select("t1.testId", "t2.name").From("test1", "t1").From("test2", "t2");
 			queryString = new SqlQueryBuilder().GetQueryString(query);
 			Assert.Equal("SELECT `t1`.`testId`, `t2`.`name` FROM `test1` AS `t1`, `test2` AS `t2` ;", queryString);
+		}
+
+		[Fact]
+		public void SelectExceptions()
+		{
+			// Missing from
+			var query = Query.Select("*");
+			var builder = new SqlQueryBuilder();
+
+			Assert.Throws<InvalidOperationException>(() => builder.GetQueryString(query));
 		}
 
 		[Fact]
@@ -183,6 +194,16 @@ namespace AbstractQuery.Tests.MySql
 			queryString = builder.GetQueryString(query);
 
 			Assert.Equal("INSERT INTO `accounts` (`accountId`, `name`) VALUES (12345, \"Foobar\") ;", queryString);
+		}
+
+		[Fact]
+		public void InsertIntoExceptions()
+		{
+			// Missing values
+			var query = Query.InsertInto("accounts");
+			var builder = new SqlQueryBuilder();
+
+			Assert.Throws<InvalidOperationException>(() => builder.GetQueryString(query));
 		}
 
 		[Fact]
