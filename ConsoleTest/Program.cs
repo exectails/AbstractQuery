@@ -31,8 +31,8 @@ namespace ConsoleTest
 				Console.WriteLine("Press [Return] to update the new account.");
 				Console.ReadLine();
 
-				query = Query.Update("accounts").Set("authority", 2);
-				Console.WriteLine("Inserted records: " + db.Execute(query, conn));
+				query = Query.Update("accounts").Set("authority", 2).Where("accountId", Is.Equal, newId);
+				Console.WriteLine("Updated records: " + db.Execute(query, conn));
 
 				Console.WriteLine("Press [Return] to delete the new account.");
 				Console.ReadLine();
