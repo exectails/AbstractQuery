@@ -16,6 +16,8 @@ namespace AbstractQuery
 
 		public DeleteElement DeleteElement { get; set; }
 
+		public UpdateElement UpdateElement { get; set; }
+
 		protected Query()
 		{
 		}
@@ -38,12 +40,14 @@ namespace AbstractQuery
 			return query;
 		}
 
-		//public static Query Update(string fieldName, object newValue)
-		//{
-		//	var query = new Query();
+		public static Query Update(string tableName)
+		{
+			var query = new Query();
 
-		//	return query;
-		//}
+			query.UpdateElement = new UpdateElement(tableName);
+
+			return query;
+		}
 
 		public static Query Delete()
 		{
@@ -132,6 +136,11 @@ namespace AbstractQuery
 
 			return this;
 		}
+
+		public Query Set(string fieldName, object value)
+		{
+			return this.Value(fieldName, value);
+		}
 	}
 
 	public class SelectElement
@@ -211,6 +220,16 @@ namespace AbstractQuery
 		public string TableName { get; set; }
 
 		public InsertIntoElement(string tableName)
+		{
+			this.TableName = tableName;
+		}
+	}
+
+	public class UpdateElement
+	{
+		public string TableName { get; set; }
+
+		public UpdateElement(string tableName)
 		{
 			this.TableName = tableName;
 		}
