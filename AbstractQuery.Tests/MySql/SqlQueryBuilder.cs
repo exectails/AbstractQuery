@@ -281,5 +281,63 @@ namespace AbstractQuery.Tests.MySql
 			Assert.Equal("@p1", parameters.Keys.ElementAt(1));
 			Assert.Equal("bar", parameters.Values.ElementAt(1));
 		}
+
+		[Fact]
+		public void Update()
+		{
+			var query = Query.Update("accounts").Set("accountId", 1234);
+			var builder = new SqlQueryBuilder();
+			var queryString = builder.GetQueryString(query);
+
+			Assert.Equal("UPDATE `accounts` SET `accountId` = 1234 ;", queryString);
+
+			query = Query.Update("accounts").Set("accountId", 12345).Set("name", "Foobar");
+			builder = new SqlQueryBuilder();
+			queryString = builder.GetQueryString(query);
+
+			Assert.Equal("UPDATE `accounts` SET `accountId` = 12345, `name` = \"Foobar\" ;", queryString);
+
+			query = Query.Update("accounts").Set("accountId", 12345).Set("name", "Foobar").Where("accountId", Is.NotEqual, 12345);
+			builder = new SqlQueryBuilder();
+			queryString = builder.GetQueryString(query);
+
+			Assert.Equal("UPDATE `accounts` SET `accountId` = 12345, `name` = \"Foobar\" WHERE `accountId` != 12345 ;", queryString);
+		}
+
+		[Fact]
+		public void UpdateExceptions()
+		{
+			// Missing values
+			var query = Query.Update("accounts");
+			var builder = new SqlQueryBuilder();
+
+			Assert.Throws<InvalidOperationException>(() => builder.GetQueryString(query));
+		}
+
+		[Fact]
+		public void UpdateParameters()
+		{
+			var query = Query.Update("accounts").Set("accountId", 1234);
+			var builder = new SqlQueryBuilder();
+			var queryString = builder.GetQueryString(query, true);
+			var parameters = builder.GetParameters();
+
+			Assert.Equal("UPDATE `accounts` SET `accountId` = @p0 ;", queryString);
+			Assert.Equal(1, parameters.Count);
+			Assert.Equal("@p0", parameters.Keys.ElementAt(0));
+			Assert.Equal(1234, parameters.Values.ElementAt(0));
+
+			query = Query.Update("accounts").Set("accountId", 12345).Set("name", "Foobar");
+			builder = new SqlQueryBuilder();
+			queryString = builder.GetQueryString(query, true);
+			parameters = builder.GetParameters();
+
+			Assert.Equal("UPDATE `accounts` SET `accountId` = @p0, `name` = @p1 ;", queryString);
+			Assert.Equal(2, parameters.Count);
+			Assert.Equal("@p0", parameters.Keys.ElementAt(0));
+			Assert.Equal(12345, parameters.Values.ElementAt(0));
+			Assert.Equal("@p1", parameters.Keys.ElementAt(1));
+			Assert.Equal("Foobar", parameters.Values.ElementAt(1));
+		}
 	}
 }

@@ -23,7 +23,15 @@ namespace ConsoleTest
 					}
 				}
 
-				query = Query.InsertInto("accounts").Value("accountId", "test" + count).Value("authority", 1);
+				var newId = "test" + count;
+
+				query = Query.InsertInto("accounts").Value("accountId", newId).Value("authority", 1);
+				Console.WriteLine("Inserted records: " + db.Execute(query, conn));
+
+				Console.WriteLine("Press [Return] to update the new account.");
+				Console.ReadLine();
+
+				query = Query.Update("accounts").Set("authority", 2);
 				Console.WriteLine("Inserted records: " + db.Execute(query, conn));
 
 				Console.WriteLine("Press [Return] to delete the new account.");

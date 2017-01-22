@@ -35,6 +35,8 @@ namespace AbstractQuery.MySql
 				return this.GetInsertIntoQueryString(query, parameterize);
 			else if (query.DeleteElement != null)
 				return this.GetDeleteQueryString(query, parameterize);
+			else if (query.UpdateElement != null)
+				return this.GetUpdateQueryString(query, parameterize);
 
 			throw new InvalidOperationException("Unknown query type.");
 		}
@@ -299,6 +301,47 @@ namespace AbstractQuery.MySql
 
 			// FROM
 			this.AppendFroms(sb, froms, parameterize);
+
+			// WHERE
+			this.AppendWheres(sb, query, parameterize);
+
+			sb.Append(";");
+
+			return sb.ToString();
+		}
+
+		private string GetUpdateQueryString(Query query, bool parameterize)
+		{
+			var values = query.FieldValueElements;
+
+			if (values == null || !values.Any())
+				throw new InvalidOperationException("Expected 'Set' elements in query.");
+
+			var sb = new StringBuilder();
+
+			// UPDATE
+			sb.AppendFormat("UPDATE `{0}` ", query.UpdateElement.TableName);
+
+			// SET
+			{
+				sb.Append("SET ");
+
+				var i = 0;
+				var count = values.Count;
+
+				foreach (var value in values)
+				{
+					var fieldName = QuoteFieldName(value.FieldName);
+					var fieldValue = this.PrepareValue(value.Value, parameterize);
+
+					sb.AppendFormat("{0} = {1}", fieldName, fieldValue);
+
+					if (++i < count)
+						sb.Append(", ");
+					else
+						sb.Append(" ");
+				}
+			}
 
 			// WHERE
 			this.AppendWheres(sb, query, parameterize);
