@@ -11,12 +11,12 @@ namespace AbstractQuery
 		public List<InnerJoinElement> InnerJoinElements { get; set; }
 		public LimitElement LimitElement { get; set; }
 
-		public InsertIntoElement InsertIntoElement { get; set; }
+		public TableNameElement InsertIntoElement { get; set; }
 		public List<FieldValueElement> FieldValueElements { get; set; }
 
 		public DeleteElement DeleteElement { get; set; }
 
-		public UpdateElement UpdateElement { get; set; }
+		public TableNameElement UpdateElement { get; set; }
 
 		protected Query()
 		{
@@ -35,7 +35,7 @@ namespace AbstractQuery
 		{
 			var query = new Query();
 
-			query.InsertIntoElement = new InsertIntoElement(tableName);
+			query.InsertIntoElement = new TableNameElement(tableName);
 
 			return query;
 		}
@@ -44,7 +44,7 @@ namespace AbstractQuery
 		{
 			var query = new Query();
 
-			query.UpdateElement = new UpdateElement(tableName);
+			query.UpdateElement = new TableNameElement(tableName);
 
 			return query;
 		}
@@ -215,21 +215,11 @@ namespace AbstractQuery
 		}
 	}
 
-	public class InsertIntoElement
+	public class TableNameElement
 	{
 		public string TableName { get; set; }
 
-		public InsertIntoElement(string tableName)
-		{
-			this.TableName = tableName;
-		}
-	}
-
-	public class UpdateElement
-	{
-		public string TableName { get; set; }
-
-		public UpdateElement(string tableName)
+		public TableNameElement(string tableName)
 		{
 			this.TableName = tableName;
 		}
