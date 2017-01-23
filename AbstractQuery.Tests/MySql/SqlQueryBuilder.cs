@@ -339,5 +339,15 @@ namespace AbstractQuery.Tests.MySql
 			Assert.Equal("@p1", parameters.Keys.ElementAt(1));
 			Assert.Equal("Foobar", parameters.Values.ElementAt(1));
 		}
+
+		[Fact]
+		public void DropTable()
+		{
+			var query = Query.DropTable("accounts");
+			var builder = new SqlQueryBuilder();
+			var queryString = builder.GetQueryString(query);
+
+			Assert.Equal("DROP TABLE `accounts` ;", queryString);
+		}
 	}
 }

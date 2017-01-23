@@ -37,6 +37,8 @@ namespace AbstractQuery.MySql
 				return this.GetDeleteQueryString(query, parameterize);
 			else if (query.UpdateElement != null)
 				return this.GetUpdateQueryString(query, parameterize);
+			else if (query.DropTableElement != null)
+				return this.GetDropTableQueryString(query, parameterize);
 
 			throw new InvalidOperationException("Unknown query type.");
 		}
@@ -345,6 +347,19 @@ namespace AbstractQuery.MySql
 
 			// WHERE
 			this.AppendWheres(sb, query, parameterize);
+
+			sb.Append(";");
+
+			return sb.ToString();
+		}
+
+		private string GetDropTableQueryString(Query query, bool parameterize)
+		{
+			var dropTable = query.DropTableElement;
+			var sb = new StringBuilder();
+
+			// DROP TABLE
+			sb.AppendFormat("DROP TABLE `{0}` ", dropTable.TableName);
 
 			sb.Append(";");
 
