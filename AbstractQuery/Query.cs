@@ -17,6 +17,7 @@ namespace AbstractQuery
 		public DeleteElement DeleteElement { get; set; }
 
 		public TableNameElement UpdateElement { get; set; }
+		public TableNameElement DropTableElement { get; set; }
 
 		protected Query()
 		{
@@ -64,6 +65,15 @@ namespace AbstractQuery
 
 		//	return query;
 		//}
+
+		public static Query DropTable(string tableName)
+		{
+			var query = new Query();
+
+			query.DropTableElement = new TableNameElement(tableName);
+
+			return query;
+		}
 
 		public Query From(string tableName, string shortName = null)
 		{
