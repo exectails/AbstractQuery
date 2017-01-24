@@ -8,8 +8,10 @@ namespace ConsoleTest
 		static void Main(string[] args)
 		{
 			var db = new AbstractQuery.MySql.Database("server=localhost; port=3306; database=abstractquery; uid=abstractquery; password=abstractquery; pooling=true; min pool size=0; max pool size=100; ConvertZeroDateTime=true");
+			var db2 = new AbstractQuery.SQLite.Database("test.sqlite");
 
 			TestDb(db);
+			TestDb(db2);
 
 			Console.ReadLine();
 		}

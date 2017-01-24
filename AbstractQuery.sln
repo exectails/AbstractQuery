@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbstractQuery.MySql", "Abst
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbstractQuery.Tests", "AbstractQuery.Tests\AbstractQuery.Tests.csproj", "{D153E5EF-E023-4294-8E34-B0777EBA41BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbstractQuery.SQLite", "AbstractQuery.SQLite\AbstractQuery.SQLite.csproj", "{771723CF-CBF0-4A37-BCCB-4BD9E65FE5E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{D153E5EF-E023-4294-8E34-B0777EBA41BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D153E5EF-E023-4294-8E34-B0777EBA41BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D153E5EF-E023-4294-8E34-B0777EBA41BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{771723CF-CBF0-4A37-BCCB-4BD9E65FE5E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{771723CF-CBF0-4A37-BCCB-4BD9E65FE5E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{771723CF-CBF0-4A37-BCCB-4BD9E65FE5E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{771723CF-CBF0-4A37-BCCB-4BD9E65FE5E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
