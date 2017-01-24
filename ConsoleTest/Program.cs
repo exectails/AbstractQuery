@@ -51,6 +51,9 @@ namespace ConsoleTest
 
 				query = Query.Delete().From("accounts").Where("accountId", Is.Equal, "test" + count);
 				Console.WriteLine("Deleted records: " + db.Execute(query, conn));
+
+				Console.WriteLine("Press [Return] for next db test.");
+				Console.ReadLine();
 			}
 
 			Console.WriteLine();
