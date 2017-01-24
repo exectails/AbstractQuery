@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AbstractQuery.MySql
+namespace AbstractQuery
 {
 	public class SqlQueryBuilder
 	{
