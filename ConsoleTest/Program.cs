@@ -9,6 +9,16 @@ namespace ConsoleTest
 		{
 			var db = new AbstractQuery.MySql.Database("server=localhost; port=3306; database=abstractquery; uid=abstractquery; password=abstractquery; pooling=true; min pool size=0; max pool size=100; ConvertZeroDateTime=true");
 
+			TestDb(db);
+
+			Console.ReadLine();
+		}
+
+		static void TestDb(IDatabase db)
+		{
+			Console.WriteLine(db.GetType().FullName);
+			Console.WriteLine("".PadLeft(78, '-'));
+
 			using (var conn = db.GetConnection())
 			{
 				var count = 0;
@@ -41,7 +51,7 @@ namespace ConsoleTest
 				Console.WriteLine("Deleted records: " + db.Execute(query, conn));
 			}
 
-			Console.ReadLine();
+			Console.WriteLine();
 		}
 	}
 }
