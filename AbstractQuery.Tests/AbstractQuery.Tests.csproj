@@ -42,6 +42,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SQLite\SqlQueryBuilder.cs" />
     <Compile Include="MySql\SqlQueryBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -49,6 +50,10 @@
     <ProjectReference Include="..\AbstractQuery.MySql\AbstractQuery.MySql.csproj">
       <Project>{0b9ec507-4ba1-4a3d-83f3-f737a5e62d66}</Project>
       <Name>AbstractQuery.MySql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AbstractQuery.SQLite\AbstractQuery.SQLite.csproj">
+      <Project>{771723cf-cbf0-4a37-bccb-4bd9e65fe5e0}</Project>
+      <Name>AbstractQuery.SQLite</Name>
     </ProjectReference>
     <ProjectReference Include="..\AbstractQuery\AbstractQuery.csproj">
       <Project>{0c4170d8-06cf-42a2-8598-0e7ac21bfe00}</Project>
