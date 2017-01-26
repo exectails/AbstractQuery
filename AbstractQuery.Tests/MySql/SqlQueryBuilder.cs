@@ -392,7 +392,7 @@ namespace AbstractQuery.Tests.MySql
 			var builder = new MySqlQueryBuilder();
 			var queryString = builder.GetQueryString(query);
 
-			Assert.Equal("CREATE TABLE `foobar` (`test1` tinyint, `test2` tinyint, `test3` tinyint unsigned, `test4` smallint, `test5` smallint unsigned, `test6` int, `test7` int unsigned, `test8` bigint, `test9` bigint unsigned, `test10` float, `test11` double, `test12` text, `test13` varchar(100), `test14` datetime) ;", queryString);
+			Assert.Equal("CREATE TABLE `foobar` (`test1` tinyint(1), `test2` tinyint, `test3` tinyint unsigned, `test4` smallint, `test5` smallint unsigned, `test6` int, `test7` int unsigned, `test8` bigint, `test9` bigint unsigned, `test10` float, `test11` double, `test12` text, `test13` varchar(100), `test14` datetime) ;", queryString);
 		}
 	}
 }

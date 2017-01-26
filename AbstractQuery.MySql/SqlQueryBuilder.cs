@@ -13,7 +13,12 @@ namespace AbstractQuery.MySql
 			string result;
 			var unsigned = false;
 
-			if (type == typeof(bool) || type == typeof(sbyte))
+			if (type == typeof(bool))
+			{
+				result = "tinyint";
+				length = 1;
+			}
+			else if (type == typeof(sbyte))
 			{
 				result = "tinyint";
 			}
