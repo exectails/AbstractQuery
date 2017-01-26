@@ -244,7 +244,7 @@ namespace AbstractQuery
 			}
 		}
 
-		private static string QuoteFieldName(string fieldName)
+		protected static string QuoteFieldName(string fieldName)
 		{
 			if (fieldName == "*")
 				return fieldName;
