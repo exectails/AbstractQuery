@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AbstractQuery
 {
@@ -18,6 +19,10 @@ namespace AbstractQuery
 
 		public TableNameElement UpdateElement { get; set; }
 		public TableNameElement DropTableElement { get; set; }
+
+		public CreateTableElement CreateTableElement { get; set; }
+		public List<FieldDefinitionElement> FieldDefinitionElements { get; set; }
+		public List<KeyDefinitionElement> KeyDefinitionElements { get; set; }
 
 		protected Query()
 		{
@@ -59,12 +64,75 @@ namespace AbstractQuery
 			return query;
 		}
 
-		//public static Query Create(string fieldName)
-		//{
-		//	var query = new Query();
+		public static Query CreateTable(string tableName)
+		{
+			return CreateTable(tableName, false);
+		}
 
-		//	return query;
-		//}
+		public static Query CreateTable(string tableName, bool checkExistence)
+		{
+			var query = new Query();
+
+			query.CreateTableElement = new CreateTableElement(tableName, checkExistence);
+
+			return query;
+		}
+
+		public Query Field<T>(string name)
+		{
+			return this.Field<T>(name, -1, false, default(T), FieldOptions.None);
+		}
+
+		public Query Field<T>(string name, FieldOptions options)
+		{
+			return this.Field<T>(name, -1, false, default(T), options);
+		}
+
+		public Query Field<T>(string name, T def, FieldOptions options)
+		{
+			return this.Field<T>(name, -1, true, def, options);
+		}
+
+		public Query Field<T>(string name, int length, FieldOptions options)
+		{
+			return this.Field<T>(name, length, false, default(T), options);
+		}
+
+		public Query Field<T>(string name, int length, bool hasDefault, T def, FieldOptions options)
+		{
+			var element = new FieldDefinitionElement(name, typeof(T), length, hasDefault, def, options);
+
+			if (this.FieldDefinitionElements == null)
+				this.FieldDefinitionElements = new List<FieldDefinitionElement>();
+
+			this.FieldDefinitionElements.Add(element);
+
+			return this;
+		}
+
+		public Query Key(string fieldName)
+		{
+			var element = new KeyDefinitionElement(fieldName, false);
+
+			if (this.KeyDefinitionElements == null)
+				this.KeyDefinitionElements = new List<KeyDefinitionElement>();
+
+			this.KeyDefinitionElements.Add(element);
+
+			return this;
+		}
+
+		public Query PrimaryKey(string fieldName)
+		{
+			var element = new KeyDefinitionElement(fieldName, true);
+
+			if (this.KeyDefinitionElements == null)
+				this.KeyDefinitionElements = new List<KeyDefinitionElement>();
+
+			this.KeyDefinitionElements.Add(element);
+
+			return this;
+		}
 
 		public static Query DropTable(string tableName)
 		{
@@ -235,6 +303,18 @@ namespace AbstractQuery
 		}
 	}
 
+	public class CreateTableElement
+	{
+		public string TableName { get; set; }
+		public bool CheckExistence { get; set; }
+
+		public CreateTableElement(string tableName, bool checkExistence)
+		{
+			this.TableName = tableName;
+			this.CheckExistence = checkExistence;
+		}
+	}
+
 	public class FieldValueElement
 	{
 		public string FieldName { get; set; }
@@ -251,6 +331,38 @@ namespace AbstractQuery
 	{
 		public DeleteElement()
 		{
+		}
+	}
+
+	public class FieldDefinitionElement
+	{
+		public string Name { get; private set; }
+		public Type Type { get; private set; }
+		public int Length { get; private set; }
+		public bool HasDefault { get; private set; }
+		public object Default { get; private set; }
+		public FieldOptions Options { get; private set; }
+
+		public FieldDefinitionElement(string name, Type type, int length, bool hasDefault, object def, FieldOptions options)
+		{
+			this.Name = name;
+			this.Type = type;
+			this.Length = length;
+			this.Options = options;
+			this.HasDefault = hasDefault;
+			this.Default = def;
+		}
+	}
+
+	public class KeyDefinitionElement
+	{
+		public string FieldName { get; set; }
+		public bool Primary { get; set; }
+
+		public KeyDefinitionElement(string fieldName, bool primary)
+		{
+			this.FieldName = fieldName;
+			this.Primary = primary;
 		}
 	}
 
@@ -272,5 +384,14 @@ namespace AbstractQuery
 	{
 		Ascending,
 		Descending,
+	}
+
+	[Flags]
+	public enum FieldOptions
+	{
+		None = 0x00,
+
+		NotNull = 0x01,
+		AutoIncrement = 0x02,
 	}
 }
