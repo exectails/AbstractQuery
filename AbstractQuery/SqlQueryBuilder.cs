@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AbstractQuery
 {
-	public class SqlQueryBuilder
+	public abstract class SqlQueryBuilder
 	{
 		private Dictionary<string, object> _parameters = new Dictionary<string, object>();
 		private int _parameterCount;

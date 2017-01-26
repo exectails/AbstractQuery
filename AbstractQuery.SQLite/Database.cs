@@ -55,7 +55,7 @@ namespace AbstractQuery.SQLite
 			if (sqliteConnction == null)
 				throw new InvalidOperationException("Connection can't be null.");
 
-			var builder = new SqlQueryBuilder();
+			var builder = new SQLiteQueryBuilder();
 			var queryString = builder.GetQueryString(query, true);
 			var parameters = builder.GetParameters();
 
