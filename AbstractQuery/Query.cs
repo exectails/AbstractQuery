@@ -83,6 +83,11 @@ namespace AbstractQuery
 			return this.Field<T>(name, -1, false, default(T), FieldOptions.None);
 		}
 
+		public Query Field<T>(string name, int length)
+		{
+			return this.Field<T>(name, length, false, default(T), FieldOptions.None);
+		}
+
 		public Query Field<T>(string name, FieldOptions options)
 		{
 			return this.Field<T>(name, -1, false, default(T), options);
