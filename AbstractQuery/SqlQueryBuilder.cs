@@ -39,6 +39,8 @@ namespace AbstractQuery
 				return this.GetUpdateQueryString(query, parameterize);
 			else if (query.DropTableElement != null)
 				return this.GetDropTableQueryString(query, parameterize);
+			else if (query.CreateTableElement != null)
+				return this.GetCreateTableQueryString(query, parameterize);
 
 			throw new InvalidOperationException("Unknown query type.");
 		}
@@ -365,5 +367,76 @@ namespace AbstractQuery
 
 			return sb.ToString();
 		}
+
+		protected virtual string GetCreateTableQueryString(Query query, bool parameterize)
+		{
+			var createTable = query.CreateTableElement;
+			var fieldDefinitions = query.FieldDefinitionElements;
+			var keyDefinitions = query.KeyDefinitionElements;
+			var sb = new StringBuilder();
+
+			if (fieldDefinitions == null || !fieldDefinitions.Any())
+				throw new InvalidOperationException("Expected 'Field' elements in query.");
+
+			// CREATE TABLE
+			if (!createTable.CheckExistence)
+				sb.AppendFormat("CREATE TABLE `{0}` ", createTable.TableName);
+			else
+				sb.AppendFormat("CREATE TABLE IF NOT EXISTS `{0}` ", createTable.TableName);
+
+			sb.Append("(");
+
+			// Fields
+			{
+				var i = 0;
+				var count = fieldDefinitions.Count;
+
+				foreach (var field in fieldDefinitions)
+				{
+					var fieldName = QuoteFieldName(field.Name);
+					var typeName = this.GetTypeString(field.Type, field.Length);
+
+					sb.AppendFormat("{0} {1}", fieldName, typeName);
+
+					if ((field.Options & FieldOptions.NotNull) != 0)
+						sb.Append(" NOT NULL");
+
+					if ((field.Options & FieldOptions.AutoIncrement) != 0)
+						sb.Append(" " + this.GetAutoIncrementString());
+
+					if (++i < count)
+						sb.Append(", ");
+				}
+			}
+
+			// Keys
+			if (keyDefinitions != null && keyDefinitions.Any())
+			{
+				var i = 0;
+				var count = keyDefinitions.Count;
+
+				sb.Append(", ");
+
+				foreach (var key in keyDefinitions)
+				{
+					var fieldName = QuoteFieldName(key.FieldName);
+					var primary = key.Primary;
+
+					if (primary)
+						sb.Append("PRIMARY ");
+					sb.AppendFormat("KEY ({0})", fieldName);
+
+					if (++i < count)
+						sb.Append(", ");
+				}
+			}
+
+			sb.Append(") ;");
+
+			return sb.ToString();
+		}
+
+		protected abstract string GetTypeString(Type type, int length);
+		protected abstract string GetAutoIncrementString();
 	}
 }

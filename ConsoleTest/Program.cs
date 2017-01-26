@@ -52,6 +52,33 @@ namespace ConsoleTest
 				query = Query.Delete().From("accounts").Where("accountId", Is.Equal, "test" + count);
 				Console.WriteLine("Deleted records: " + db.Execute(query, conn));
 
+				Console.WriteLine("Press [Return] to insert new table.");
+				Console.ReadLine();
+
+				query = Query
+					.CreateTable("foobar")
+					.Field<int>("foobarId", FieldOptions.NotNull | FieldOptions.AutoIncrement)
+					.Field<string>("name", 100, FieldOptions.NotNull)
+					.Field<string>("info")
+					.PrimaryKey("foobarId");
+				db.Execute(query, conn);
+
+				Console.WriteLine("Press [Return] to insert rows into the new table.");
+				Console.ReadLine();
+
+				query = Query.InsertInto("foobar").Value("name", "Bar, Foo").Value("info", "");
+				Console.WriteLine("Inserted records: " + db.Execute(query, conn));
+				query = Query.InsertInto("foobar").Value("foobarId", 100).Value("name", "Boo, Foo").Value("info", "test");
+				Console.WriteLine("Inserted records: " + db.Execute(query, conn));
+				query = Query.InsertInto("foobar").Value("name", "Foo, Boo").Value("info", null);
+				Console.WriteLine("Inserted records: " + db.Execute(query, conn));
+
+				Console.WriteLine("Press [Return] to delete the new table.");
+				Console.ReadLine();
+
+				query = Query.DropTable("foobar");
+				db.Execute(query, conn);
+
 				Console.WriteLine("Press [Return] for next db test.");
 				Console.ReadLine();
 			}
