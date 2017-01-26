@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace AbstractQuery.Tests.MySql
+namespace AbstractQuery.Tests
 {
 	public class SqlQueryBuilderTests
 	{
