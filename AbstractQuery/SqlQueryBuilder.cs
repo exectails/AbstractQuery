@@ -372,7 +372,6 @@ namespace AbstractQuery
 		{
 			var createTable = query.CreateTableElement;
 			var fieldDefinitions = query.FieldDefinitionElements;
-			var keyDefinitions = query.KeyDefinitionElements;
 			var sb = new StringBuilder();
 
 			if (fieldDefinitions == null || !fieldDefinitions.Any())
@@ -385,6 +384,9 @@ namespace AbstractQuery
 				sb.AppendFormat("CREATE TABLE IF NOT EXISTS `{0}` ", createTable.TableName);
 
 			sb.Append("(");
+
+			var primaryFields = fieldDefinitions.Where(a => (a.Options & FieldOptions.PrimaryKey) != 0);
+			var primaryFieldsCount = primaryFields.Count();
 
 			// Fields
 			{
@@ -401,6 +403,9 @@ namespace AbstractQuery
 					if ((field.Options & FieldOptions.NotNull) != 0)
 						sb.Append(" NOT NULL");
 
+					if (primaryFieldsCount <= 1 && (field.Options & FieldOptions.PrimaryKey) != 0)
+						sb.Append(" PRIMARY KEY");
+
 					if ((field.Options & FieldOptions.AutoIncrement) != 0)
 						sb.Append(" " + this.GetAutoIncrementString());
 
@@ -410,25 +415,9 @@ namespace AbstractQuery
 			}
 
 			// Keys
-			if (keyDefinitions != null && keyDefinitions.Any())
+			if (primaryFieldsCount > 1)
 			{
-				var i = 0;
-				var count = keyDefinitions.Count;
-
-				sb.Append(", ");
-
-				foreach (var key in keyDefinitions)
-				{
-					var fieldName = string.Join(", ", key.FieldNames.Select(a => QuoteFieldName(a)));
-					var primary = (key.Type == KeyType.Primary);
-
-					if (primary)
-						sb.Append("PRIMARY ");
-					sb.AppendFormat("KEY ({0})", fieldName);
-
-					if (++i < count)
-						sb.Append(", ");
-				}
+				sb.AppendFormat(", PRIMARY KEY ({0})", string.Join(", ", primaryFields.Select(a => QuoteFieldName(a.Name))));
 			}
 
 			sb.Append(") ;");

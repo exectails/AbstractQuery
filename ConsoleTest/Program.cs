@@ -13,6 +13,7 @@ namespace ConsoleTest
 			TestDb(db);
 			TestDb(db2);
 
+			Console.WriteLine("End reached.");
 			Console.ReadLine();
 		}
 
@@ -57,10 +58,9 @@ namespace ConsoleTest
 
 				query = Query
 					.CreateTable("foobar")
-					.Field<int>("foobarId", FieldOptions.NotNull | FieldOptions.AutoIncrement)
+					.Field<int>("foobarId", FieldOptions.NotNull | FieldOptions.PrimaryKey | FieldOptions.AutoIncrement)
 					.Field<string>("name", 100, FieldOptions.NotNull)
-					.Field<string>("info")
-					.PrimaryKey("foobarId");
+					.Field<string>("info");
 				db.Execute(query, conn);
 
 				Console.WriteLine("Press [Return] to insert rows into the new table.");

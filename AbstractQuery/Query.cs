@@ -22,7 +22,6 @@ namespace AbstractQuery
 
 		public CreateTableElement CreateTableElement { get; set; }
 		public List<FieldDefinitionElement> FieldDefinitionElements { get; set; }
-		public List<KeyDefinitionElement> KeyDefinitionElements { get; set; }
 
 		protected Query()
 		{
@@ -111,18 +110,6 @@ namespace AbstractQuery
 				this.FieldDefinitionElements = new List<FieldDefinitionElement>();
 
 			this.FieldDefinitionElements.Add(element);
-
-			return this;
-		}
-
-		public Query PrimaryKey(params string[] fieldNames)
-		{
-			var element = new KeyDefinitionElement(KeyType.Primary, fieldNames);
-
-			if (this.KeyDefinitionElements == null)
-				this.KeyDefinitionElements = new List<KeyDefinitionElement>();
-
-			this.KeyDefinitionElements.Add(element);
 
 			return this;
 		}
@@ -347,18 +334,6 @@ namespace AbstractQuery
 		}
 	}
 
-	public class KeyDefinitionElement
-	{
-		public string[] FieldNames { get; set; }
-		public KeyType Type { get; set; }
-
-		public KeyDefinitionElement(KeyType type, params string[] fieldNames)
-		{
-			this.Type = type;
-			this.FieldNames = fieldNames;
-		}
-	}
-
 	public enum Is
 	{
 		LowerThen,
@@ -386,10 +361,6 @@ namespace AbstractQuery
 
 		NotNull = 0x01,
 		AutoIncrement = 0x02,
-	}
-
-	public enum KeyType
-	{
-		Primary,
+		PrimaryKey = 0x04,
 	}
 }
