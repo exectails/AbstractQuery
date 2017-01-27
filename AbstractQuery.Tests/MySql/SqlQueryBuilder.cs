@@ -355,15 +355,14 @@ namespace AbstractQuery.Tests.MySql
 		{
 			var query = Query
 					.CreateTable("foobar")
-					.Field<int>("foobarId", FieldOptions.NotNull | FieldOptions.AutoIncrement)
+					.Field<int>("foobarId", FieldOptions.NotNull | FieldOptions.PrimaryKey | FieldOptions.AutoIncrement)
 					.Field<string>("name", 100, FieldOptions.NotNull)
-					.Field<string>("info")
-					.PrimaryKey("foobarId");
+					.Field<string>("info");
 
 			var builder = new MySqlQueryBuilder();
 			var queryString = builder.GetQueryString(query);
 
-			Assert.Equal("CREATE TABLE `foobar` (`foobarId` int NOT NULL AUTO_INCREMENT, `name` varchar(100) NOT NULL, `info` text, PRIMARY KEY (`foobarId`)) ;", queryString);
+			Assert.Equal("CREATE TABLE `foobar` (`foobarId` int NOT NULL PRIMARY KEY AUTO_INCREMENT, `name` varchar(100) NOT NULL, `info` text) ;", queryString);
 		}
 
 		[Fact]
@@ -371,18 +370,16 @@ namespace AbstractQuery.Tests.MySql
 		{
 			var query = Query
 					.CreateTable("foobar")
-					.Field<int>("foobarId")
-					.PrimaryKey("foobarId");
+					.Field<int>("foobarId", FieldOptions.PrimaryKey);
 			var builder = new MySqlQueryBuilder();
 			var queryString = builder.GetQueryString(query);
 
-			Assert.Equal("CREATE TABLE `foobar` (`foobarId` int, PRIMARY KEY (`foobarId`)) ;", queryString);
+			Assert.Equal("CREATE TABLE `foobar` (`foobarId` int PRIMARY KEY) ;", queryString);
 
 			query = Query
 				   .CreateTable("foobar")
-				   .Field<int>("foobarId1")
-				   .Field<int>("foobarId2")
-				   .PrimaryKey("foobarId1", "foobarId2");
+				   .Field<int>("foobarId1", FieldOptions.PrimaryKey)
+				   .Field<int>("foobarId2", FieldOptions.PrimaryKey);
 			builder = new MySqlQueryBuilder();
 			queryString = builder.GetQueryString(query);
 
