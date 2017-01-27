@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AbstractQuery
 {
@@ -109,7 +110,15 @@ namespace AbstractQuery
 			if (this.FieldDefinitionElements == null)
 				this.FieldDefinitionElements = new List<FieldDefinitionElement>();
 
+			if ((element.Options & FieldOptions.AutoIncrement) != 0 && (element.Options & FieldOptions.PrimaryKey) == 0)
+				throw new InvalidOperationException("Only the PrimaryKey can have the AutoIncrement option.");
+
 			this.FieldDefinitionElements.Add(element);
+
+			var primaryFieldsCount = this.FieldDefinitionElements.Count(a => (a.Options & FieldOptions.PrimaryKey) != 0);
+			var autoIncrementFieldsCount = this.FieldDefinitionElements.Count(a => (a.Options & FieldOptions.AutoIncrement) != 0);
+			if (primaryFieldsCount > 1 && autoIncrementFieldsCount > 0)
+				throw new InvalidOperationException("There can only be one PrimaryKey if any field has the AutoIncrement option.");
 
 			return this;
 		}

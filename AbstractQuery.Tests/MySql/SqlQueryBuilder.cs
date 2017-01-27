@@ -366,6 +366,16 @@ namespace AbstractQuery.Tests.MySql
 		}
 
 		[Fact]
+		public void CreateTableExceptions()
+		{
+			var query = Query.CreateTable("foobar");
+			Assert.Throws<InvalidOperationException>(() => { query.Field<int>("testId", FieldOptions.AutoIncrement); });
+
+			query = Query.CreateTable("foobar").Field<int>("testId", FieldOptions.PrimaryKey | FieldOptions.AutoIncrement);
+			Assert.Throws<InvalidOperationException>(() => { query.Field<int>("testId", FieldOptions.PrimaryKey); });
+		}
+
+		[Fact]
 		public void CreateTablePrimaryKey()
 		{
 			var query = Query
