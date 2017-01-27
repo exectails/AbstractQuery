@@ -115,21 +115,9 @@ namespace AbstractQuery
 			return this;
 		}
 
-		public Query Key(string fieldName)
+		public Query PrimaryKey(params string[] fieldNames)
 		{
-			var element = new KeyDefinitionElement(fieldName, false);
-
-			if (this.KeyDefinitionElements == null)
-				this.KeyDefinitionElements = new List<KeyDefinitionElement>();
-
-			this.KeyDefinitionElements.Add(element);
-
-			return this;
-		}
-
-		public Query PrimaryKey(string fieldName)
-		{
-			var element = new KeyDefinitionElement(fieldName, true);
+			var element = new KeyDefinitionElement(KeyType.Primary, fieldNames);
 
 			if (this.KeyDefinitionElements == null)
 				this.KeyDefinitionElements = new List<KeyDefinitionElement>();
@@ -361,13 +349,13 @@ namespace AbstractQuery
 
 	public class KeyDefinitionElement
 	{
-		public string FieldName { get; set; }
-		public bool Primary { get; set; }
+		public string[] FieldNames { get; set; }
+		public KeyType Type { get; set; }
 
-		public KeyDefinitionElement(string fieldName, bool primary)
+		public KeyDefinitionElement(KeyType type, params string[] fieldNames)
 		{
-			this.FieldName = fieldName;
-			this.Primary = primary;
+			this.Type = type;
+			this.FieldNames = fieldNames;
 		}
 	}
 
@@ -398,5 +386,10 @@ namespace AbstractQuery
 
 		NotNull = 0x01,
 		AutoIncrement = 0x02,
+	}
+
+	public enum KeyType
+	{
+		Primary,
 	}
 }

@@ -367,6 +367,29 @@ namespace AbstractQuery.Tests.MySql
 		}
 
 		[Fact]
+		public void CreateTablePrimaryKey()
+		{
+			var query = Query
+					.CreateTable("foobar")
+					.Field<int>("foobarId")
+					.PrimaryKey("foobarId");
+			var builder = new MySqlQueryBuilder();
+			var queryString = builder.GetQueryString(query);
+
+			Assert.Equal("CREATE TABLE `foobar` (`foobarId` int, PRIMARY KEY (`foobarId`)) ;", queryString);
+
+			query = Query
+				   .CreateTable("foobar")
+				   .Field<int>("foobarId1")
+				   .Field<int>("foobarId2")
+				   .PrimaryKey("foobarId1", "foobarId2");
+			builder = new MySqlQueryBuilder();
+			queryString = builder.GetQueryString(query);
+
+			Assert.Equal("CREATE TABLE `foobar` (`foobarId1` int, `foobarId2` int, PRIMARY KEY (`foobarId1`, `foobarId2`)) ;", queryString);
+		}
+
+		[Fact]
 		public void CreateTableTypes()
 		{
 			var i = 1;

@@ -43,7 +43,7 @@ namespace AbstractQuery.SQLite
 
 					if (keyDefinitions != null)
 					{
-						var key = keyDefinitions.FirstOrDefault(a => a.FieldName == field.Name && a.Primary == true);
+						var key = keyDefinitions.FirstOrDefault(a => a.FieldNames.Contains(field.Name) && a.Type == KeyType.Primary);
 						if (key != null)
 						{
 							sb.Append(" PRIMARY KEY");

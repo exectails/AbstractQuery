@@ -419,8 +419,8 @@ namespace AbstractQuery
 
 				foreach (var key in keyDefinitions)
 				{
-					var fieldName = QuoteFieldName(key.FieldName);
-					var primary = key.Primary;
+					var fieldName = string.Join(", ", key.FieldNames.Select(a => QuoteFieldName(a)));
+					var primary = (key.Type == KeyType.Primary);
 
 					if (primary)
 						sb.Append("PRIMARY ");
