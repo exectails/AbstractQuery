@@ -3,7 +3,7 @@ using System.Data.SQLite;
 
 namespace AbstractQuery.SQLite
 {
-	public class SQLiteQueryResult : QueryResult
+	public class SQLiteQueryDataReader : QueryDataReader
 	{
 		private SQLiteDataReader _reader;
 
@@ -12,7 +12,7 @@ namespace AbstractQuery.SQLite
 			get { return _reader.HasRows; }
 		}
 
-		public SQLiteQueryResult(SQLiteDataReader reader)
+		public SQLiteQueryDataReader(SQLiteDataReader reader)
 		{
 			_reader = reader;
 		}

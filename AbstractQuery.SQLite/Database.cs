@@ -30,11 +30,11 @@ namespace AbstractQuery.SQLite
 			return connection;
 		}
 
-		public QueryResult ExecuteReader(Query query, IDbConnection connection, IDbTransaction transaction = null)
+		public QueryDataReader ExecuteReader(Query query, IDbConnection connection, IDbTransaction transaction = null)
 		{
 			var mc = this.GetCommand(query, connection, transaction);
 			var reader = mc.ExecuteReader();
-			var result = new SQLiteQueryResult(reader);
+			var result = new SQLiteQueryDataReader(reader);
 
 			return result;
 		}

@@ -25,7 +25,7 @@ namespace AbstractQuery
 		/// <param name="connection"></param>
 		/// <param name="transaction"></param>
 		/// <returns></returns>
-		QueryResult ExecuteReader(Query query, IDbConnection connection, IDbTransaction transaction = null);
+		QueryDataReader ExecuteReader(Query query, IDbConnection connection, IDbTransaction transaction = null);
 
 		/// <summary>
 		/// Executes query and returns the number of affected datasets.

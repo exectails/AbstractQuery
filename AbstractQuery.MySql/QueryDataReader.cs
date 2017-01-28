@@ -3,7 +3,7 @@ using System;
 
 namespace AbstractQuery.MySql
 {
-	public class MySqlQueryResult : QueryResult
+	public class MySqlQueryDataReader : QueryDataReader
 	{
 		private MySqlDataReader _reader;
 
@@ -12,7 +12,7 @@ namespace AbstractQuery.MySql
 			get { return _reader.HasRows; }
 		}
 
-		public MySqlQueryResult(MySqlDataReader reader)
+		public MySqlQueryDataReader(MySqlDataReader reader)
 		{
 			_reader = reader;
 		}

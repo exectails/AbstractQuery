@@ -3,9 +3,9 @@
 namespace AbstractQuery
 {
 	/// <summary>
-	/// Query result reader.
+	/// Query data reader.
 	/// </summary>
-	public abstract class QueryResult : IDisposable
+	public abstract class QueryDataReader : IDisposable
 	{
 		/// <summary>
 		/// Returns whether there are any results to read.

@@ -24,11 +24,11 @@ namespace AbstractQuery.MySql
 			return result;
 		}
 
-		public QueryResult ExecuteReader(Query query, IDbConnection connection, IDbTransaction transaction = null)
+		public QueryDataReader ExecuteReader(Query query, IDbConnection connection, IDbTransaction transaction = null)
 		{
 			var mc = this.GetMySqlCommand(query, connection, transaction);
 			var reader = mc.ExecuteReader();
-			var result = new MySqlQueryResult(reader);
+			var result = new MySqlQueryDataReader(reader);
 
 			return result;
 		}
