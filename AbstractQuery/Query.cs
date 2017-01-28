@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace AbstractQuery
 {
+	/// <summary>
+	/// Wrapper around potential query elements.
+	/// </summary>
 	public class Query
 	{
 		public SelectElement SelectElement { get; set; }
@@ -28,6 +31,11 @@ namespace AbstractQuery
 		{
 		}
 
+		/// <summary>
+		/// Creates new Query and adds a Select element.
+		/// </summary>
+		/// <param name="fieldNames"></param>
+		/// <returns></returns>
 		public static Query Select(params string[] fieldNames)
 		{
 			var query = new Query();
@@ -37,6 +45,11 @@ namespace AbstractQuery
 			return query;
 		}
 
+		/// <summary>
+		/// Creates new Query and adds an InsertInto element.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <returns></returns>
 		public static Query InsertInto(string tableName)
 		{
 			var query = new Query();
@@ -46,6 +59,11 @@ namespace AbstractQuery
 			return query;
 		}
 
+		/// <summary>
+		/// Creates new Query and adds Update element.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <returns></returns>
 		public static Query Update(string tableName)
 		{
 			var query = new Query();
@@ -55,6 +73,10 @@ namespace AbstractQuery
 			return query;
 		}
 
+		/// <summary>
+		/// Creates new Query and adds Delete element.
+		/// </summary>
+		/// <returns></returns>
 		public static Query Delete()
 		{
 			var query = new Query();
@@ -64,11 +86,22 @@ namespace AbstractQuery
 			return query;
 		}
 
+		/// <summary>
+		/// Creates new Query and adds CreateTable element.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <returns></returns>
 		public static Query CreateTable(string tableName)
 		{
 			return CreateTable(tableName, false);
 		}
 
+		/// <summary>
+		/// Creates new Query and adds CreateTable element.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <param name="checkExistence"></param>
+		/// <returns></returns>
 		public static Query CreateTable(string tableName, bool checkExistence)
 		{
 			var query = new Query();
@@ -78,31 +111,77 @@ namespace AbstractQuery
 			return query;
 		}
 
+		/// <summary>
+		/// Adds Field element to Query.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public Query Field<T>(string name)
 		{
 			return this.Field<T>(name, -1, false, default(T), FieldOptions.None);
 		}
 
+		/// <summary>
+		/// Adds Field element to Query.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="length"></param>
+		/// <returns></returns>
 		public Query Field<T>(string name, int length)
 		{
 			return this.Field<T>(name, length, false, default(T), FieldOptions.None);
 		}
 
+		/// <summary>
+		/// Adds Field element to Query.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
 		public Query Field<T>(string name, FieldOptions options)
 		{
 			return this.Field<T>(name, -1, false, default(T), options);
 		}
 
+		/// <summary>
+		/// Adds Field element to Query.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="def"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
 		public Query Field<T>(string name, T def, FieldOptions options)
 		{
 			return this.Field<T>(name, -1, true, def, options);
 		}
 
+		/// <summary>
+		/// Adds Field element to Query.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="length"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
 		public Query Field<T>(string name, int length, FieldOptions options)
 		{
 			return this.Field<T>(name, length, false, default(T), options);
 		}
 
+		/// <summary>
+		/// Adds Field element to Query.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="length"></param>
+		/// <param name="hasDefault"></param>
+		/// <param name="def"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
 		public Query Field<T>(string name, int length, bool hasDefault, T def, FieldOptions options)
 		{
 			var element = new FieldDefinitionElement(name, typeof(T), length, hasDefault, def, options);
@@ -123,6 +202,11 @@ namespace AbstractQuery
 			return this;
 		}
 
+		/// <summary>
+		/// Creates new Query and adds DropTable element.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <returns></returns>
 		public static Query DropTable(string tableName)
 		{
 			var query = new Query();
@@ -132,6 +216,12 @@ namespace AbstractQuery
 			return query;
 		}
 
+		/// <summary>
+		/// Adds From element to Query.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <param name="shortName"></param>
+		/// <returns></returns>
 		public Query From(string tableName, string shortName = null)
 		{
 			var element = new FromElement(tableName, shortName);
@@ -144,6 +234,13 @@ namespace AbstractQuery
 			return this;
 		}
 
+		/// <summary>
+		/// Adds Where element to Query.
+		/// </summary>
+		/// <param name="fieldName"></param>
+		/// <param name="comparision"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public Query Where(string fieldName, Is comparision, object value)
 		{
 			var element = new WhereElement { FieldName = fieldName, Value = value, Comparison = comparision };
@@ -156,6 +253,12 @@ namespace AbstractQuery
 			return this;
 		}
 
+		/// <summary>
+		/// Adds OrderBy element to Query.
+		/// </summary>
+		/// <param name="fieldName"></param>
+		/// <param name="direction"></param>
+		/// <returns></returns>
 		public Query OrderBy(string fieldName, OrderDirection direction = OrderDirection.Ascending)
 		{
 			var element = new OrderByElement(fieldName, direction);
@@ -168,6 +271,13 @@ namespace AbstractQuery
 			return this;
 		}
 
+		/// <summary>
+		/// Adds InnerJoin element to Query.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <param name="fieldName1"></param>
+		/// <param name="fieldName2"></param>
+		/// <returns></returns>
 		public Query InnerJoin(string tableName, string fieldName1, string fieldName2)
 		{
 			var element = new InnerJoinElement(tableName, fieldName1, fieldName2);
@@ -180,11 +290,22 @@ namespace AbstractQuery
 			return this;
 		}
 
+		/// <summary>
+		/// Adds Limit element to Query.
+		/// </summary>
+		/// <param name="count"></param>
+		/// <returns></returns>
 		public Query Limit(int count)
 		{
 			return this.Limit(0, count);
 		}
 
+		/// <summary>
+		/// Adds Limit element to Query.
+		/// </summary>
+		/// <param name="start"></param>
+		/// <param name="count"></param>
+		/// <returns></returns>
 		public Query Limit(int start, int count)
 		{
 			this.LimitElement = new LimitElement(start, count);
@@ -192,6 +313,12 @@ namespace AbstractQuery
 			return this;
 		}
 
+		/// <summary>
+		/// Adds Value element to Query, for inserts.
+		/// </summary>
+		/// <param name="fieldName"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public Query Value(string fieldName, object value)
 		{
 			var element = new FieldValueElement(fieldName, value);
@@ -204,12 +331,21 @@ namespace AbstractQuery
 			return this;
 		}
 
+		/// <summary>
+		/// Adds Set/Value element to Query, for updates.
+		/// </summary>
+		/// <param name="fieldName"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public Query Set(string fieldName, object value)
 		{
 			return this.Value(fieldName, value);
 		}
 	}
 
+	/// <summary>
+	/// Holds information about a Select.
+	/// </summary>
 	public class SelectElement
 	{
 		public List<string> FieldNames { get; set; }
@@ -225,6 +361,9 @@ namespace AbstractQuery
 		}
 	}
 
+	/// <summary>
+	/// Holds information about where to select from.
+	/// </summary>
 	public class FromElement
 	{
 		public string TableName { get; set; }
@@ -237,6 +376,9 @@ namespace AbstractQuery
 		}
 	}
 
+	/// <summary>
+	/// Holds information about conditions.
+	/// </summary>
 	public class WhereElement
 	{
 		public string FieldName { get; set; }
@@ -244,6 +386,9 @@ namespace AbstractQuery
 		public Is Comparison { get; set; }
 	}
 
+	/// <summary>
+	/// Holds information about how to sort a result.
+	/// </summary>
 	public class OrderByElement
 	{
 		public string FieldName { get; set; }
@@ -256,6 +401,9 @@ namespace AbstractQuery
 		}
 	}
 
+	/// <summary>
+	/// Holds information about table joins.
+	/// </summary>
 	public class InnerJoinElement
 	{
 		public string TableName { get; set; }
@@ -270,6 +418,9 @@ namespace AbstractQuery
 		}
 	}
 
+	/// <summary>
+	/// Holds information about how many datasets to query.
+	/// </summary>
 	public class LimitElement
 	{
 		public int Start { get; set; }
@@ -282,6 +433,9 @@ namespace AbstractQuery
 		}
 	}
 
+	/// <summary>
+	/// Holds the name of a table to use in a query.
+	/// </summary>
 	public class TableNameElement
 	{
 		public string TableName { get; set; }
@@ -292,6 +446,9 @@ namespace AbstractQuery
 		}
 	}
 
+	/// <summary>
+	/// Holds information about a table creation.
+	/// </summary>
 	public class CreateTableElement
 	{
 		public string TableName { get; set; }
@@ -304,6 +461,9 @@ namespace AbstractQuery
 		}
 	}
 
+	/// <summary>
+	/// Holds the name and the (new) value of a field.
+	/// </summary>
 	public class FieldValueElement
 	{
 		public string FieldName { get; set; }
@@ -316,6 +476,9 @@ namespace AbstractQuery
 		}
 	}
 
+	/// <summary>
+	/// Dummy element.
+	/// </summary>
 	public class DeleteElement
 	{
 		public DeleteElement()
@@ -323,6 +486,9 @@ namespace AbstractQuery
 		}
 	}
 
+	/// <summary>
+	/// Holds information about a field that is to be created.
+	/// </summary>
 	public class FieldDefinitionElement
 	{
 		public string Name { get; private set; }
@@ -343,6 +509,9 @@ namespace AbstractQuery
 		}
 	}
 
+	/// <summary>
+	/// Operators used in Where.
+	/// </summary>
 	public enum Is
 	{
 		LowerThen,
@@ -357,12 +526,18 @@ namespace AbstractQuery
 		IsNot,
 	}
 
+	/// <summary>
+	/// Direction to order results in.
+	/// </summary>
 	public enum OrderDirection
 	{
 		Ascending,
 		Descending,
 	}
 
+	/// <summary>
+	/// Options for fields that are to be created.
+	/// </summary>
 	[Flags]
 	public enum FieldOptions
 	{
