@@ -10,20 +10,38 @@ namespace AbstractQuery
 		private Dictionary<string, object> _parameters = new Dictionary<string, object>();
 		private int _parameterCount;
 
+		/// <summary>
+		/// Creates new instance.
+		/// </summary>
 		public SqlQueryBuilder()
 		{
 		}
 
+		/// <summary>
+		/// Returns generated parameters, to be passed on the command.
+		/// </summary>
+		/// <returns></returns>
 		public IDictionary<string, object> GetParameters()
 		{
 			return _parameters;
 		}
 
+		/// <summary>
+		/// Generates query string from query.
+		/// </summary>
+		/// <param name="query"></param>
+		/// <returns></returns>
 		public string GetQueryString(Query query)
 		{
 			return this.GetQueryString(query, false);
 		}
 
+		/// <summary>
+		/// Generates query string from query.
+		/// </summary>
+		/// <param name="query"></param>
+		/// <param name="parameterize">Generate parameters?</param>
+		/// <returns></returns>
 		public string GetQueryString(Query query, bool parameterize)
 		{
 			_parameters.Clear();
@@ -45,6 +63,12 @@ namespace AbstractQuery
 			throw new InvalidOperationException("Unknown query type.");
 		}
 
+		/// <summary>
+		/// Generates SELECT query string.
+		/// </summary>
+		/// <param name="query"></param>
+		/// <param name="parameterize"></param>
+		/// <returns></returns>
 		private string GetSelectQueryString(Query query, bool parameterize)
 		{
 			var sb = new StringBuilder();
@@ -132,6 +156,12 @@ namespace AbstractQuery
 			return sb.ToString();
 		}
 
+		/// <summary>
+		/// Appends FROM element to string builder.
+		/// </summary>
+		/// <param name="sb"></param>
+		/// <param name="froms"></param>
+		/// <param name="parameterize"></param>
 		private void AppendFroms(StringBuilder sb, List<FromElement> froms, bool parameterize)
 		{
 			var i = 0;
@@ -153,6 +183,12 @@ namespace AbstractQuery
 			}
 		}
 
+		/// <summary>
+		/// Generates INSERT INTO query string.
+		/// </summary>
+		/// <param name="query"></param>
+		/// <param name="parameterize"></param>
+		/// <returns></returns>
 		private string GetInsertIntoQueryString(Query query, bool parameterize)
 		{
 			var sb = new StringBuilder();
@@ -204,6 +240,12 @@ namespace AbstractQuery
 			return sb.ToString();
 		}
 
+		/// <summary>
+		/// Appends WHERE element to string builder.
+		/// </summary>
+		/// <param name="sb"></param>
+		/// <param name="query"></param>
+		/// <param name="parameterize"></param>
 		private void AppendWheres(StringBuilder sb, Query query, bool parameterize)
 		{
 			if (query.WhereElements == null || !query.WhereElements.Any())
@@ -244,6 +286,11 @@ namespace AbstractQuery
 			}
 		}
 
+		/// <summary>
+		/// Wraps field name in proper quotes.
+		/// </summary>
+		/// <param name="fieldName"></param>
+		/// <returns></returns>
 		protected static string QuoteFieldName(string fieldName)
 		{
 			if (fieldName == "*")
@@ -259,6 +306,13 @@ namespace AbstractQuery
 			return string.Format("`{0}`.`{1}`", tableName, fieldName);
 		}
 
+		/// <summary>
+		/// Returns ready to use value, quoted and/or turned into
+		/// a parameter.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="parameterize"></param>
+		/// <returns></returns>
 		private string PrepareValue(object value, bool parameterize)
 		{
 			string result = null;
@@ -291,6 +345,12 @@ namespace AbstractQuery
 			return result;
 		}
 
+		/// <summary>
+		/// Generates DELETE query string.
+		/// </summary>
+		/// <param name="query"></param>
+		/// <param name="parameterize"></param>
+		/// <returns></returns>
 		private string GetDeleteQueryString(Query query, bool parameterize)
 		{
 			var froms = query.FromElements;
@@ -314,6 +374,12 @@ namespace AbstractQuery
 			return sb.ToString();
 		}
 
+		/// <summary>
+		/// Generates UPDATE query string.
+		/// </summary>
+		/// <param name="query"></param>
+		/// <param name="parameterize"></param>
+		/// <returns></returns>
 		private string GetUpdateQueryString(Query query, bool parameterize)
 		{
 			var values = query.FieldValueElements;
@@ -355,6 +421,12 @@ namespace AbstractQuery
 			return sb.ToString();
 		}
 
+		/// <summary>
+		/// Generates DROP TABLE query string.
+		/// </summary>
+		/// <param name="query"></param>
+		/// <param name="parameterize"></param>
+		/// <returns></returns>
 		private string GetDropTableQueryString(Query query, bool parameterize)
 		{
 			var dropTable = query.DropTableElement;
@@ -368,6 +440,12 @@ namespace AbstractQuery
 			return sb.ToString();
 		}
 
+		/// <summary>
+		/// Generates CREATE TABLE query string.
+		/// </summary>
+		/// <param name="query"></param>
+		/// <param name="parameterize"></param>
+		/// <returns></returns>
 		protected virtual string GetCreateTableQueryString(Query query, bool parameterize)
 		{
 			var createTable = query.CreateTableElement;
@@ -425,7 +503,19 @@ namespace AbstractQuery
 			return sb.ToString();
 		}
 
+		/// <summary>
+		/// Returns type as a valid string for the query.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="length"></param>
+		/// <returns></returns>
 		protected abstract string GetTypeString(Type type, int length);
+
+		/// <summary>
+		/// Returns the string that indidcates auto increment fields in
+		/// the query.
+		/// </summary>
+		/// <returns></returns>
 		protected abstract string GetAutoIncrementString();
 	}
 }
